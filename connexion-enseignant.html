@@ -133,11 +133,15 @@
   </form>
 
 <script>
+  // ضع هنا نفس رابط الـ Web App المستعمل فـ باقي الصفحات (نفس الباك-إند الموحد)
+  const API_URL = "رابط_الـ_Web_App_الجديد_ديالك_هنا";
+
   const form      = document.getElementById('loginForm');
   const errorMsg  = document.getElementById('errorMsg');
   const togglePwd = document.getElementById('togglePwd');
   const pwdInput  = document.getElementById('password');
   const eyeIcon   = document.getElementById('eyeIcon');
+  const submitBtn = form.querySelector('button[type="submit"]');
 
   togglePwd.addEventListener('click', () => {
     const isText = pwdInput.type === 'text';
@@ -152,32 +156,48 @@
     window.location.replace('espace-enseignant.html');
   }
 
-  function loadTeachers() {
-    try {
-      return JSON.parse(localStorage.getItem('diwanEnseignants')) || [];
-    } catch (e) {
-      return [];
-    }
-  }
-
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('username').value.trim();
     const password = pwdInput.value;
 
-    const teacher = loadTeachers().find(
-      (t) => t.username === username && t.password === password
-    );
-
-    if (teacher) {
-      sessionStorage.setItem('diwanTeacherAuth', JSON.stringify({ id: teacher.id, username: teacher.username }));
-      window.location.href = 'espace-enseignant.html';
-    } else {
+    if (!username || !password) {
+      errorMsg.textContent = "Veuillez remplir tous les champs.";
       errorMsg.classList.remove('hidden');
-      form.classList.remove('shake');
-      void form.offsetWidth;
-      form.classList.add('shake');
-      pwdInput.value = '';
+      return;
+    }
+
+    errorMsg.classList.add('hidden');
+    submitBtn.disabled = true;
+    const originalBtnHtml = submitBtn.innerHTML;
+    submitBtn.innerHTML = 'Connexion en cours...';
+
+    try {
+      const res = await fetch(
+        `${API_URL}?action=teacherLogin&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+        { cache: 'no-store' }
+      );
+      const data = await res.json();
+
+      if (data.status === 'success' && data.teacher) {
+        // On stocke directement l'objet enseignant tel que renvoyé par l'API
+        // (id, nom, prenom, genre, adresse, telephone, niveau, groupe)
+        sessionStorage.setItem('diwanTeacherAuth', JSON.stringify(data.teacher));
+        window.location.href = 'espace-enseignant.html';
+      } else {
+        errorMsg.textContent = "Nom d'utilisateur ou mot de passe incorrect.";
+        errorMsg.classList.remove('hidden');
+        form.classList.remove('shake');
+        void form.offsetWidth;
+        form.classList.add('shake');
+        pwdInput.value = '';
+      }
+    } catch (err) {
+      errorMsg.textContent = "Erreur de connexion au serveur.";
+      errorMsg.classList.remove('hidden');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnHtml;
     }
   });
 </script>
