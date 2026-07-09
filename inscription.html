@@ -80,7 +80,6 @@
 
 <body class="antialiased">
 
-<!-- ================= HEADER ================= -->
 <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-line">
   <div class="max-w-5xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between">
     <a href="index.html" class="flex items-center gap-3">
@@ -97,7 +96,6 @@
   </div>
 </header>
 
-<!-- ================= HERO STRIP ================= -->
 <section class="bg-navy-900 relative overflow-hidden">
   <div class="absolute inset-0 opacity-[0.06] pointer-events-none flex items-center justify-center">
     <svg viewBox="0 0 800 300" class="w-full h-full"><g stroke="#F0A93C" stroke-width="1.5">
@@ -113,10 +111,8 @@
   </div>
 </section>
 
-<!-- ================= FORM ================= -->
 <main class="max-w-5xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
 
-  <!-- Progress indicator -->
   <div class="flex items-center justify-center gap-2 mb-12" aria-hidden="true">
     <span class="progress-dot w-2.5 h-2.5 rounded-full bg-gold"></span>
     <span class="progress-dot w-2.5 h-2.5 rounded-full bg-gold"></span>
@@ -126,7 +122,6 @@
 
   <form id="regForm" novalidate class="space-y-8">
 
-    <!-- ===== SECTION 1 : Student info ===== -->
     <section class="step-card bg-white border border-line rounded-3xl p-6 sm:p-9 shadow-sm">
       <div class="flex items-center gap-4 mb-7">
         <div class="w-11 h-11 rounded-xl bg-navy grid place-items-center shrink-0">
@@ -159,6 +154,20 @@
           <input id="pob" name="pob" type="text" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none" placeholder="Ex: Kénitra">
           <p class="field-hint mt-1" data-error></p>
         </div>
+        <div>
+          <label for="gender" class="field-label block mb-2">Genre / Sexe <span class="text-red-500">*</span></label>
+          <select id="gender" name="gender" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none appearance-none cursor-pointer">
+            <option value="" disabled selected hidden>Sélectionnez le genre</option>
+            <option value="Masculin">Masculin</option>
+            <option value="Féminin">Féminin</option>
+          </select>
+          <p class="field-hint mt-1" data-error></p>
+        </div>
+        <div>
+          <label for="level" class="field-label block mb-2">Niveau d'inscription <span class="text-red-500">*</span></label>
+          <input id="level" name="level" type="text" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none" placeholder="Ex: 3ème année Collège, Tronc Commun, Primaire...">
+          <p class="field-hint mt-1" data-error></p>
+        </div>
       </div>
 
       <div class="mt-6">
@@ -178,7 +187,6 @@
       </div>
     </section>
 
-    <!-- ===== SECTION 2 : Parents info ===== -->
     <section class="step-card bg-white border border-line rounded-3xl p-6 sm:p-9 shadow-sm">
       <div class="flex items-center gap-4 mb-7">
         <div class="w-11 h-11 rounded-xl bg-navy grid place-items-center shrink-0">
@@ -214,7 +222,6 @@
       </div>
     </section>
 
-    <!-- ===== SECTION 3 : Documents ===== -->
     <section class="step-card bg-white border border-line rounded-3xl p-6 sm:p-9 shadow-sm">
       <div class="flex items-center gap-4 mb-7">
         <div class="w-11 h-11 rounded-xl bg-navy grid place-items-center shrink-0">
@@ -259,11 +266,10 @@
       </div>
     </section>
 
-    <!-- ===== SECTION 4 : Contact ===== -->
     <section class="step-card bg-white border border-line rounded-3xl p-6 sm:p-9 shadow-sm">
       <div class="flex items-center gap-4 mb-7">
         <div class="w-11 h-11 rounded-xl bg-navy grid place-items-center shrink-0">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 16.9v2.5a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3-8.7A2 2 0 014.1 2h2.5a2 2 0 012 1.7c.1.9.3 1.8.6 2.7a2 2 0 01-.5 2.1L7.6 9.6a16 16 0 006 6l1.1-1.1a2 2 0 012.1-.5c.9.3 1.8.5 2.7.6a2 2 0 011.7 2.1z" stroke="#F0A93C" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 16.9v2.5a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3 19.5 19.5 0 01-6-6 19.5 19.5 0 01-3-8.7A2 2 0 014.1 2h2.5a2 2 0 012 1.7c.1.9.3 1.8.6 2.7a2 2 0 01-.5 2.1L7.6 9.6a16 16 0 006 6l1.1-1.1a2 2 0 012.1-.5c.9.3 1.8.5 2.7.6a2 2 0 011.7 2.1z" stroke="#F0A93C" stroke-width="1.8" stroke-linejoin="round"/></svg>
         </div>
         <div>
           <h2 class="font-display font-semibold text-navy text-xl">Coordonnées de Contact</h2>
@@ -290,7 +296,6 @@
       </div>
     </section>
 
-    <!-- ===== SUBMIT ===== -->
     <div class="flex flex-col items-center gap-5 pt-4">
       <button id="submitBtn" type="submit" class="inline-flex items-center gap-3 bg-navy hover:bg-navy-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-extrabold px-10 py-4 rounded-full transition-colors shadow-xl shadow-navy/25 text-base">
         <span id="btnSpinner" class="spinner hidden"></span>
@@ -302,7 +307,6 @@
   </form>
 </main>
 
-<!-- ================= TOAST ================= -->
 <div id="toast" class="toast fixed bottom-6 inset-x-0 mx-auto w-fit max-w-[90vw] px-6 py-4 rounded-2xl shadow-2xl z-50 flex items-center gap-3">
   <span id="toastIcon"></span>
   <p id="toastText" class="text-sm font-bold"></p>
@@ -315,14 +319,9 @@
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// ================== CONFIGURATION ==================
-// Remplacez cette URL par celle de votre déploiement Google Apps Script
-// (voir backend/SETUP_INSTRUCTIONS.md)
 const API_URL = "https://script.google.com/macros/s/AKfycbzp02iIFpmApUG9TwgOZCU9Fi6plJuEvICC2z2znb2urpqb_dqzTDjssoTF2Fv6ij6ZlQ/exec";
-
 const MAX_FILE_MB = 5;
 
-// ================== FILE DROP ZONES ==================
 function wireDropZone(zoneId, inputId, labelId, opts) {
   const zone = document.getElementById(zoneId);
   const input = document.getElementById(inputId);
@@ -365,7 +364,6 @@ wireDropZone('dropPhoto', 'photoFile', 'photoLabel', { previewImg: 'photoPreview
 wireDropZone('dropBirth', 'birthFile', 'birthLabel');
 wireDropZone('dropId', 'idFile', 'idLabel');
 
-// ================== VALIDATION HELPERS ==================
 function showFieldError(input, message) {
   const errorEl = input.closest('div').parentElement.querySelector('[data-error]') ||
                   input.parentElement.querySelector('[data-error]');
@@ -406,7 +404,6 @@ function showToast(message, type) {
   setTimeout(() => { toast.classList.remove('show'); }, 5000);
 }
 
-// ================== FORM SUBMIT ==================
 const form = document.getElementById('regForm');
 const submitBtn = document.getElementById('submitBtn');
 const btnSpinner = document.getElementById('btnSpinner');
@@ -415,9 +412,8 @@ const btnText = document.getElementById('btnText');
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  // Reset previous errors
   form.querySelectorAll('[data-error]').forEach(el => el.textContent = '');
-  form.querySelectorAll('input').forEach(el => el.classList.remove('border-red-400'));
+  form.querySelectorAll('input, select').forEach(el => el.classList.remove('border-red-400'));
 
   let firstInvalid = null;
   const requiredInputs = form.querySelectorAll('[required]');
@@ -461,6 +457,8 @@ form.addEventListener('submit', async (e) => {
       lastName: form.lastName.value.trim(),
       dob: form.dob.value,
       pob: form.pob.value.trim(),
+      gender: form.gender.value,
+      level: form.level.value.trim(),
       fatherName: form.fatherName.value.trim(),
       motherName: form.motherName.value.trim(),
       fatherCIN: form.fatherCIN.value.trim(),
