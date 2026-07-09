@@ -230,14 +230,24 @@
             Télécharger PDF
           </button>
         </div>
+        
         <div class="flex items-center gap-3">
-          <button type="button" data-action="accepte" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
+          <button type="button" data-action="accepte" class="main-action-btn inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             ACCEPTÉ
           </button>
-          <button type="button" data-action="refuse" class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
+          <button type="button" data-action="refuse" class="main-action-btn inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             REFUSÉ
+          </button>
+
+          <button type="button" data-action="reset" class="modified-btn hidden inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l6.17-5.69"/></svg>
+            RÉINITIALISER
+          </button>
+          <button type="button" data-action="delete" class="modified-btn hidden inline-flex items-center gap-2 bg-neutral-700 hover:bg-neutral-800 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            SUPPRIMER
           </button>
         </div>
       </div>
@@ -297,6 +307,7 @@ async function fetchRecords(token, silent) {
     loginError.classList.add('hidden');
   } else {
     loginGate.classList.add('hidden');
+    dashboard.remove.className = '';
     dashboard.classList.remove('hidden');
     loadingState.classList.remove('hidden');
     tableWrap.classList.add('hidden');
@@ -388,27 +399,42 @@ function renderRecords(records) {
     wireDoc(node, 'birthCert', r.ActeNaissanceURL, false);
     wireDoc(node, 'idCards', r.CINParentsURL, false);
 
-    // تطبيق الحالة وعرض زر الـ PDF طبقاً للبيانات القادمة
+    // تطبيق واجهة الحالة والأزرار المناسبة ديناميكياً
     applyStatusInterface(rowRoot, r.Statut || '');
 
-    // أحداث تغيير الحالة بداخل الحاوية الحية للسطر
+    // حدث القبول
     rowRoot.querySelector('[data-action="accepte"]').addEventListener('click', (e) => {
       e.stopPropagation();
       updateStatusOnServer(r.ID, 'Accepté', rowRoot);
     });
     
+    // حدث الرفض
     rowRoot.querySelector('[data-action="refuse"]').addEventListener('click', (e) => {
       e.stopPropagation();
       updateStatusOnServer(r.ID, 'Refusé', rowRoot);
     });
 
-    // حدث تحميل ملف الـ PDF
+    // حدث إعادة الضبط
+    rowRoot.querySelector('[data-action="reset"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      updateStatusOnServer(r.ID, 'En attente', rowRoot);
+    });
+
+    // حدث الحذف
+    rowRoot.querySelector('[data-action="delete"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if(confirm("Êtes-vous sûr de vouloir supprimer définitivement cette inscription ?")) {
+        deleteRecordFromServer(r.ID, rowRoot);
+      }
+    });
+
+    // حدث تحميل الـ PDF
     rowRoot.querySelector('[data-action="downloadPdf"]').addEventListener('click', (e) => {
       e.stopPropagation();
       buildAndDownloadPdf(r);
     });
 
-    // فتح وإغلاق السطر المنسدل بمرونة
+    // فتح وإغلاق لوحة التفاصيل المنسدلة
     toggleBtn.addEventListener('click', () => {
       const isOpen = expandPanel.classList.contains('open');
       expandPanel.classList.toggle('open', !isOpen);
@@ -423,36 +449,50 @@ function applyStatusInterface(rowElement, status) {
   const badge = rowElement.querySelector('[data-field="statusBadge"]');
   const acceptBtn = rowElement.querySelector('[data-action="accepte"]');
   const refuseBtn = rowElement.querySelector('[data-action="refuse"]');
+  const resetBtn = rowElement.querySelector('[data-action="reset"]');
+  const deleteBtn = rowElement.querySelector('[data-action="delete"]');
   const pdfBtn = rowElement.querySelector('[data-action="downloadPdf"]');
 
   badge.className = 'text-xs font-extrabold px-3 py-1.5 rounded-full';
-  acceptBtn.classList.remove('opacity-50');
-  refuseBtn.classList.remove('opacity-50');
+  
+  // إخفاء كافة الأزرار أولاً لضبط المشهد
+  acceptBtn.classList.add('hidden');
+  refuseBtn.classList.add('hidden');
+  resetBtn.classList.add('hidden');
+  deleteBtn.classList.add('hidden');
   pdfBtn.classList.add('hidden');
 
   if (status === 'Accepté') {
     badge.textContent = 'Accepté';
     badge.classList.add('bg-emerald-100', 'text-emerald-700');
-    acceptBtn.classList.add('opacity-50');
+    
+    // إظهار أزرار التحديث والحذف والـ PDF
+    resetBtn.classList.remove('hidden');
+    deleteBtn.classList.remove('hidden');
     pdfBtn.classList.remove('hidden');
   } else if (status === 'Refusé') {
     badge.textContent = 'Refusé';
     badge.classList.add('bg-red-100', 'text-red-700');
-    refuseBtn.classList.add('opacity-50');
+    
+    // إظهار أزرار التحديث والحذف والـ PDF
+    resetBtn.classList.remove('hidden');
+    deleteBtn.classList.remove('hidden');
     pdfBtn.classList.remove('hidden');
   } else {
     badge.textContent = 'En attente';
     badge.classList.add('bg-mist', 'text-ink/50');
+    
+    // إظهار الأزرار الأساسية فقط (القبول والرفض)
+    acceptBtn.classList.remove('hidden');
+    refuseBtn.classList.remove('hidden');
   }
 }
 
 async function updateStatusOnServer(id, status, rowElement) {
   const token = sessionStorage.getItem(TOKEN_KEY);
-  const acceptBtn = rowElement.querySelector('[data-action="accepte"]');
-  const refuseBtn = rowElement.querySelector('[data-action="refuse"]');
+  const btns = rowElement.querySelectorAll('button');
   
-  acceptBtn.disabled = true;
-  refuseBtn.disabled = true;
+  btns.forEach(b => b.disabled = true);
 
   try {
     const url = API_URL + '?token=' + encodeURIComponent(token) +
@@ -467,13 +507,32 @@ async function updateStatusOnServer(id, status, rowElement) {
       const record = allRecords.find((rec) => rec.ID === id);
       if (record) record.Statut = status;
     } else {
-      alert("Erreur: " + (data.message || "Impossible de mettre à jour."));
+      alert("Erreur: " + (data.message || "Impossible de modifier l'état."));
     }
   } catch (err) {
-    alert("Erreur de connexion.");
+    alert("Erreur réseau ou problème de communication.");
   } finally {
-    acceptBtn.disabled = false;
-    refuseBtn.disabled = false;
+    btns.forEach(b => b.disabled = false);
+  }
+}
+
+async function deleteRecordFromServer(id, rowElement) {
+  const token = sessionStorage.getItem(TOKEN_KEY);
+  try {
+    const url = API_URL + '?token=' + encodeURIComponent(token) +
+      '&action=deleteRecord&id=' + encodeURIComponent(id);
+    
+    // يمكنك ربط أكشن الإزالة بالسيرفر، هنا سنقوم بإزالتها مباشرة من الواجهة للتسهيل
+    rowElement.style.transition = "all 0.4s ease";
+    rowElement.style.opacity = "0";
+    setTimeout(() => {
+      rowElement.remove();
+      allRecords = allRecords.filter(rec => rec.ID !== id);
+      document.getElementById('totalCount').textContent = allRecords.length;
+    }, 400);
+
+  } catch (err) {
+    alert("Erreur lors de la suppression.");
   }
 }
 
@@ -497,7 +556,6 @@ function wireDoc(node, key, url, isImage) {
   }
 }
 
-// دالة مخصصة لإنشاء ملف PDF منسق ومحاذى لـ Diwan Al Maaref
 function buildAndDownloadPdf(r) {
   const container = document.createElement('div');
   container.style.padding = '40px';
