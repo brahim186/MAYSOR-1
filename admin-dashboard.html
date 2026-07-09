@@ -218,6 +218,23 @@
         </div>
 
       </div>
+
+      <div class="px-5 sm:px-7 pb-7 -mt-2 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-5">
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] font-extrabold uppercase tracking-wide text-ink/40">Statut :</span>
+          <span data-field="statusBadge" class="text-xs font-extrabold px-3 py-1.5 rounded-full">—</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button type="button" data-action="accepte" class="status-btn inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            ACCEPTÉ
+          </button>
+          <button type="button" data-action="refuse" class="status-btn inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            REFUSÉ
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -369,6 +386,17 @@ function renderRecords(records) {
     wireDoc(node, 'birthCert', r.ActeNaissanceURL, false);
     wireDoc(node, 'idCards', r.CINParentsURL, false);
 
+    applyStatus(node, r.Statut || '');
+
+    node.querySelector('[data-action="accepte"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      handleStatusChange(r.ID, 'Accepté', node);
+    });
+    node.querySelector('[data-action="refuse"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      handleStatusChange(r.ID, 'Refusé', node);
+    });
+
     toggleBtn.addEventListener('click', () => {
       const isOpen = expandPanel.classList.contains('open');
       expandPanel.classList.toggle('open', !isOpen);
@@ -377,6 +405,56 @@ function renderRecords(records) {
 
     container.appendChild(node);
   });
+}
+
+function applyStatus(node, status) {
+  const badge = node.querySelector('[data-field="statusBadge"]');
+  const acceptBtn = node.querySelector('[data-action="accepte"]');
+  const refuseBtn = node.querySelector('[data-action="refuse"]');
+
+  badge.classList.remove('bg-emerald-100', 'text-emerald-700', 'bg-red-100', 'text-red-700', 'bg-mist', 'text-ink/50');
+  acceptBtn.classList.remove('opacity-50');
+  refuseBtn.classList.remove('opacity-50');
+
+  if (status === 'Accepté') {
+    badge.textContent = 'Accepté';
+    badge.classList.add('bg-emerald-100', 'text-emerald-700');
+    acceptBtn.classList.add('opacity-50');
+  } else if (status === 'Refusé') {
+    badge.textContent = 'Refusé';
+    badge.classList.add('bg-red-100', 'text-red-700');
+    refuseBtn.classList.add('opacity-50');
+  } else {
+    badge.textContent = 'En attente';
+    badge.classList.add('bg-mist', 'text-ink/50');
+  }
+}
+
+async function handleStatusChange(id, status, node) {
+  const token = sessionStorage.getItem(TOKEN_KEY);
+  const acceptBtn = node.querySelector('[data-action="accepte"]');
+  const refuseBtn = node.querySelector('[data-action="refuse"]');
+  acceptBtn.disabled = true;
+  refuseBtn.disabled = true;
+
+  try {
+    const url = API_URL + '?token=' + encodeURIComponent(token) +
+      '&action=updateStatus&id=' + encodeURIComponent(id) +
+      '&status=' + encodeURIComponent(status);
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (data.status === 'success') {
+      applyStatus(node, status);
+      const record = allRecords.find((rec) => rec.ID === id);
+      if (record) record.Statut = status;
+    }
+  } catch (err) {
+    // silent fail — the admin can retry
+  } finally {
+    acceptBtn.disabled = false;
+    refuseBtn.disabled = false;
+  }
 }
 
 function wireDoc(node, key, url, isImage) {
