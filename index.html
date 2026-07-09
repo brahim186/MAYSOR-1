@@ -1,866 +1,767 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MAYSOR — صابون طبيعي مغربي</title>
+<title>DiwanE Al Maaref | Institution de Soutien Scolaire</title>
+<meta name="description" content="DiwanE Al Maaref — Institution de soutien scolaire à Kénitra. Accompagnement personnalisé du primaire au baccalauréat, préparation aux examens, méthodologie moderne et enseignants qualifiés.">
+<meta name="keywords" content="soutien scolaire, cours particuliers, Kénitra, Maroc, préparation examens, baccalauréat, DiwanE Al Maaref">
+<link rel="icon" type="image/png" href="assets/logo.png">
+
+<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Tajawal:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Splide carousel -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/splide/4.1.4/css/splide.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/splide/4.1.4/js/splide.min.js"></script>
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          navy:   { DEFAULT: '#1B1464', 50:'#EEECF9', 100:'#D6D1F0', 600:'#241A78', 700:'#170F52', 900:'#100B3B' },
+          purple: { DEFAULT: '#5B3AA6', 50:'#F1ECFA' },
+          gold:   { DEFAULT: '#F0A93C', light:'#FBC873', dark:'#D98F1F' },
+          ink:    '#221D3D',
+          mist:   '#F6F4FC',
+          line:   '#E7E2F3',
+        },
+        fontFamily: {
+          display: ['Fraunces', 'serif'],
+          body: ['Manrope', 'sans-serif'],
+        },
+      }
+    }
+  }
+</script>
+
 <style>
-  :root {
-    --cream: #FAF7F0;
-    --ivory: #F3EEE4;
-    --gold: #C9A84C;
-    --gold-light: #E8D49A;
-    --green: #4A7C2F;
-    --green-soft: #EAF3DE;
-    --rose: #C4657A;
-    --rose-soft: #F9EEF0;
-    --ink: #1E1710;
-    --ink-soft: #5C4F3A;
-    --border: rgba(201,168,76,0.25);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
+  body { font-family: 'Manrope', sans-serif; color: #221D3D; background:#FFFFFF; }
+  h1,h2,h3,h4, .font-display { font-family: 'Fraunces', serif; }
 
-  body {
-    font-family: 'Tajawal', sans-serif;
-    background: var(--cream);
-    color: var(--ink);
-    overflow-x: hidden;
-  }
+  ::selection { background: #F0A93C; color:#1B1464; }
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 48px;
-    background: rgba(250,247,240,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    letter-spacing: 0.2em;
-    color: var(--ink);
-    text-decoration: none;
-  }
-  .nav-logo span { color: var(--gold); }
-  .nav-links { display: flex; gap: 32px; list-style: none; }
-  .nav-links a {
-    font-size: 14px; font-weight: 300; color: var(--ink-soft);
-    text-decoration: none; letter-spacing: 0.05em;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--gold); }
-  .nav-cart {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--ink); color: var(--cream);
-    padding: 9px 20px; border-radius: 40px;
-    font-size: 13px; font-weight: 400;
-    cursor: pointer; border: none; letter-spacing: 0.05em;
-    transition: background 0.2s;
-  }
-  .nav-cart:hover { background: var(--gold); }
-
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden;
-    padding-top: 80px;
-  }
-  .hero-bg {
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 80% 80% at 50% 50%, var(--ivory) 0%, var(--cream) 100%);
-  }
-  .mandala-bg {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 700px; height: 700px;
-    opacity: 0.06;
-    animation: slowSpin 60s linear infinite;
-  }
-  @keyframes slowSpin { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
-
-  .hero-content { position: relative; z-index: 2; text-align: center; max-width: 680px; padding: 0 24px; }
-  .hero-eyebrow {
-    font-size: 11px; letter-spacing: 0.35em; color: var(--gold);
-    font-family: 'Playfair Display', serif;
-    margin-bottom: 20px; display: block;
-  }
-  .hero-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(64px, 12vw, 110px);
-    font-weight: 400;
-    letter-spacing: 0.15em;
-    color: var(--ink);
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-  .hero-title-ar {
-    font-family: 'Tajawal', sans-serif;
-    font-size: 24px; font-weight: 300;
-    color: var(--ink-soft); letter-spacing: 0.1em;
-    margin-bottom: 32px;
-    direction: rtl;
-  }
-  .hero-divider {
-    display: flex; align-items: center; justify-content: center;
-    gap: 16px; margin-bottom: 28px;
-  }
-  .hero-divider-line { width: 60px; height: 1px; background: var(--gold); opacity: 0.5; }
-  .hero-divider-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
-  .hero-desc {
-    font-size: 16px; font-weight: 300; line-height: 1.8;
-    color: var(--ink-soft); margin-bottom: 40px;
-    direction: rtl;
-  }
-  .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-  .btn-primary {
-    background: var(--ink); color: var(--cream);
-    padding: 14px 36px; border-radius: 40px;
-    font-size: 14px; font-weight: 400; letter-spacing: 0.08em;
-    border: none; cursor: pointer; transition: all 0.25s;
-    font-family: 'Tajawal', sans-serif;
-    text-decoration: none; display: inline-block;
-  }
-  .btn-primary:hover { background: var(--gold); transform: translateY(-1px); }
-  .btn-outline {
-    background: transparent; color: var(--ink);
-    padding: 13px 36px; border-radius: 40px;
-    font-size: 14px; font-weight: 400; letter-spacing: 0.08em;
-    border: 1px solid var(--gold); cursor: pointer; transition: all 0.25s;
-    font-family: 'Tajawal', sans-serif;
-    text-decoration: none; display: inline-block;
-  }
-  .btn-outline:hover { background: var(--gold); color: var(--cream); }
-
-  /* STRIP */
-  .strip {
-    background: var(--ink);
-    padding: 14px 0;
-    overflow: hidden;
-  }
-  .strip-inner {
-    display: flex; gap: 60px;
-    animation: marquee 18s linear infinite;
-    white-space: nowrap;
-  }
-  .strip-item {
-    font-size: 12px; letter-spacing: 0.3em; color: var(--gold-light);
-    font-family: 'Playfair Display', serif;
-  }
-  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-  /* ABOUT */
-  .section { padding: 100px 48px; }
-  .section-center { text-align: center; }
-  .eyebrow {
-    font-size: 11px; letter-spacing: 0.3em; color: var(--gold);
-    font-family: 'Playfair Display', serif; display: block;
-    margin-bottom: 16px;
-  }
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(28px, 4vw, 42px);
-    font-weight: 400; color: var(--ink);
-    margin-bottom: 20px; line-height: 1.3;
-  }
-  .section-desc {
-    font-size: 16px; font-weight: 300; line-height: 1.9;
-    color: var(--ink-soft); max-width: 560px; margin: 0 auto;
-    direction: rtl;
-  }
-  .about-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 2px; margin-top: 60px;
-  }
-  .about-card {
-    background: var(--ivory); padding: 48px 36px;
-    text-align: center;
-  }
-  .about-icon { font-size: 32px; margin-bottom: 16px; display: block; }
-  .about-card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px; font-weight: 400;
-    color: var(--ink); margin-bottom: 10px;
-  }
-  .about-card-desc { font-size: 14px; font-weight: 300; line-height: 1.7; color: var(--ink-soft); direction: rtl; }
-
-  /* PRODUCTS */
-  .products-section { padding: 100px 48px; background: var(--ivory); }
-  .products-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px; margin-top: 60px;
-  }
-  .product-card {
-    background: var(--cream); border-radius: 4px;
-    overflow: hidden; cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    border: 1px solid var(--border);
-  }
-  .product-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 40px rgba(30,23,16,0.1);
-  }
-  .product-img {
-    height: 280px; position: relative; overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .product-visual {
-    width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 72px;
-    transition: transform 0.4s;
-  }
-  .product-card:hover .product-visual { transform: scale(1.05); }
-  .product-badge {
-    position: absolute; top: 16px; right: 16px;
-    background: var(--rose); color: white;
-    font-size: 10px; letter-spacing: 0.1em;
-    padding: 4px 12px; border-radius: 20px;
-  }
-  .product-info { padding: 24px; }
-  .product-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px; font-weight: 400;
-    color: var(--ink); margin-bottom: 4px;
-  }
-  .product-name-ar { font-size: 13px; color: var(--gold); margin-bottom: 10px; }
-  .product-desc { font-size: 13px; font-weight: 300; line-height: 1.6; color: var(--ink-soft); direction: rtl; margin-bottom: 16px; }
-  .product-footer { display: flex; align-items: center; justify-content: space-between; }
-  .product-price {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px; color: var(--ink);
-  }
-  .product-price span { font-size: 12px; color: var(--ink-soft); font-family: 'Tajawal', sans-serif; }
-  .add-btn {
-    background: var(--ink); color: var(--cream);
-    border: none; border-radius: 40px;
-    padding: 9px 20px; font-size: 13px;
-    cursor: pointer; transition: background 0.2s;
-    font-family: 'Tajawal', sans-serif;
-  }
-  .add-btn:hover { background: var(--gold); }
-
-  /* SCENTS */
-  .scents-section { padding: 100px 48px; }
-  .scents-grid {
-    display: flex; flex-wrap: wrap;
-    gap: 12px; justify-content: center;
-    margin-top: 48px;
-  }
-  .scent-pill {
-    background: var(--cream); border: 1px solid var(--border);
-    padding: 12px 24px; border-radius: 40px;
-    font-size: 14px; color: var(--ink-soft);
-    cursor: default; transition: all 0.2s;
-    direction: rtl;
-  }
-  .scent-pill:hover { background: var(--gold); color: var(--cream); border-color: var(--gold); }
-  .scent-pill.active { background: var(--green); color: white; border-color: var(--green); }
-
-  /* GIFT */
-  .gift-section {
-    padding: 100px 48px;
-    background: var(--ink);
-    text-align: center; position: relative; overflow: hidden;
-  }
-  .gift-section .section-title { color: var(--cream); }
-  .gift-section .section-desc { color: rgba(250,247,240,0.65); }
-  .gift-mandala {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 500px; height: 500px;
-    opacity: 0.04;
-  }
-  .gift-tags {
-    display: flex; gap: 12px; justify-content: center;
-    flex-wrap: wrap; margin: 36px 0;
-  }
-  .gift-tag {
-    border: 1px solid rgba(201,168,76,0.4);
-    color: var(--gold-light);
-    padding: 8px 20px; border-radius: 40px;
-    font-size: 13px; letter-spacing: 0.05em;
-  }
-  .gift-btn {
-    background: var(--gold); color: var(--ink);
-    padding: 14px 40px; border-radius: 40px;
-    font-size: 14px; font-weight: 500; letter-spacing: 0.08em;
-    border: none; cursor: pointer;
-    font-family: 'Tajawal', sans-serif;
-    transition: transform 0.2s;
-    text-decoration: none; display: inline-block;
-  }
-  .gift-btn:hover { transform: translateY(-2px); }
-
-  /* TESTIMONIALS */
-  .testimonials { padding: 100px 48px; background: var(--ivory); }
-  .testimonials-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 24px; margin-top: 60px;
-  }
-  .testimonial-card { background: var(--cream); padding: 36px; border: 1px solid var(--border); border-radius: 4px; }
-  .testimonial-stars { color: var(--gold); font-size: 14px; margin-bottom: 16px; }
-  .testimonial-text { font-size: 15px; font-weight: 300; line-height: 1.8; color: var(--ink-soft); direction: rtl; margin-bottom: 20px; font-style: italic; }
-  .testimonial-name { font-size: 13px; color: var(--ink); font-weight: 500; direction: rtl; }
-  .testimonial-loc { font-size: 12px; color: var(--gold); direction: rtl; }
-
-  /* ORDER FORM */
-  .order-section { padding: 100px 48px; }
-  .order-form {
-    max-width: 560px; margin: 60px auto 0;
-    background: var(--ivory); padding: 48px;
-    border: 1px solid var(--border);
+  /* Focus visibility */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    outline: 2px solid #F0A93C;
+    outline-offset: 3px;
     border-radius: 4px;
   }
-  .form-group { margin-bottom: 20px; }
-  .form-label { font-size: 12px; letter-spacing: 0.1em; color: var(--ink-soft); display: block; margin-bottom: 8px; direction: rtl; }
-  .form-input {
-    width: 100%; background: var(--cream);
-    border: 1px solid var(--border); border-radius: 4px;
-    padding: 12px 16px; font-size: 14px; font-weight: 300;
-    color: var(--ink); font-family: 'Tajawal', sans-serif;
-    direction: rtl; outline: none;
-    transition: border-color 0.2s;
-  }
-  .form-input:focus { border-color: var(--gold); }
-  .form-select {
-    width: 100%; background: var(--cream);
-    border: 1px solid var(--border); border-radius: 4px;
-    padding: 12px 16px; font-size: 14px; font-weight: 300;
-    color: var(--ink); font-family: 'Tajawal', sans-serif;
-    direction: rtl; outline: none; appearance: none;
-    cursor: pointer;
-  }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .form-submit {
-    width: 100%; background: var(--ink); color: var(--cream);
-    border: none; border-radius: 40px; padding: 16px;
-    font-size: 15px; font-weight: 400; letter-spacing: 0.08em;
-    cursor: pointer; font-family: 'Tajawal', sans-serif;
-    margin-top: 8px; transition: background 0.2s;
-  }
-  .form-submit:hover { background: var(--gold); }
-  .form-note { font-size: 12px; color: var(--ink-soft); text-align: center; margin-top: 14px; direction: rtl; }
 
-  /* FOOTER */
-  footer {
-    background: var(--ink); padding: 60px 48px 32px;
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
   }
-  .footer-top {
-    display: grid; grid-template-columns: 1.5fr 1fr 1fr;
-    gap: 48px; padding-bottom: 48px;
-    border-bottom: 1px solid rgba(201,168,76,0.15);
-  }
-  .footer-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 28px; letter-spacing: 0.2em;
-    color: var(--cream); margin-bottom: 12px;
-  }
-  .footer-logo span { color: var(--gold); }
-  .footer-desc { font-size: 13px; font-weight: 300; line-height: 1.8; color: rgba(250,247,240,0.5); direction: rtl; }
-  .footer-col-title { font-size: 11px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 16px; }
-  .footer-links { list-style: none; }
-  .footer-links li { margin-bottom: 10px; }
-  .footer-links a { font-size: 13px; font-weight: 300; color: rgba(250,247,240,0.5); text-decoration: none; transition: color 0.2s; direction: rtl; display: block; }
-  .footer-links a:hover { color: var(--cream); }
-  .footer-bottom {
-    display: flex; justify-content: space-between; align-items: center;
-    padding-top: 28px;
-  }
-  .footer-copy { font-size: 12px; color: rgba(250,247,240,0.3); direction: rtl; }
-  .social-links { display: flex; gap: 16px; }
-  .social-link {
-    width: 36px; height: 36px; border-radius: 50%;
-    border: 1px solid rgba(201,168,76,0.3);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--gold); font-size: 14px; text-decoration: none;
-    transition: all 0.2s;
-  }
-  .social-link:hover { background: var(--gold); color: var(--ink); border-color: var(--gold); }
 
-  /* CART TOAST */
-  .toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
-    background: var(--ink); color: var(--cream);
-    padding: 14px 28px; border-radius: 40px;
-    font-size: 14px; direction: rtl;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
-    z-index: 999;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
+  /* Reveal-on-scroll */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
-  /* RESPONSIVE */
-  @media (max-width: 768px) {
-    nav { padding: 14px 20px; }
-    .nav-links { display: none; }
-    .section, .products-section, .scents-section, .gift-section,
-    .testimonials, .order-section { padding: 64px 20px; }
-    .about-grid { grid-template-columns: 1fr; gap: 2px; }
-    .testimonials-grid { grid-template-columns: 1fr; }
-    .footer-top { grid-template-columns: 1fr; gap: 32px; }
-    .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
-    .hero-btns { flex-direction: column; align-items: center; }
-    .form-row { grid-template-columns: 1fr; }
+  /* Sunburst signature */
+  .sunburst { position: absolute; inset: 0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
+  .sunburst svg { width: 100%; height: 100%; }
+
+  /* Sticky nav shadow state handled via JS class */
+  .nav-shadow { box-shadow: 0 8px 30px -12px rgba(27,20,100,0.18); }
+
+  /* Splide arrows/pagination recolor */
+  .splide__arrow { background: rgba(255,255,255,0.14) !important; backdrop-filter: blur(6px); }
+  .splide__arrow svg { fill: #fff !important; }
+  .splide__pagination__page { background: rgba(255,255,255,0.45) !important; }
+  .splide__pagination__page.is-active { background: #F0A93C !important; transform: scale(1.3); }
+
+  .eyebrow { letter-spacing: 0.22em; }
+
+  .card-lift { transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; }
+  .card-lift:hover { transform: translateY(-6px); box-shadow: 0 24px 48px -20px rgba(27,20,100,0.28); border-color:#F0A93C; }
+
+  .gold-underline { position: relative; }
+  .gold-underline::after {
+    content:""; position:absolute; left:0; bottom:-10px; height:3px; width:52px;
+    background: linear-gradient(90deg,#F0A93C,#5B3AA6);
+    border-radius: 999px;
   }
+  .gold-underline.center::after { left:50%; transform: translateX(-50%); }
+
+  .stat-num { font-variant-numeric: tabular-nums; }
+
+  .radiating-line { stroke: #F0A93C; }
+
+  /* Marquee for trust strip */
+  .marquee-track { animation: marquee 28s linear infinite; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 </style>
 </head>
-<body>
 
-<!-- NAV -->
-<nav>
-  <a href="#" class="nav-logo">MAY<span>S</span>OR</a>
-  <ul class="nav-links">
-    <li><a href="#products">المنتجات</a></li>
-    <li><a href="#scents">النكهات</a></li>
-    <li><a href="#gifts">الهدايا</a></li>
-    <li><a href="#order">اطلب الآن</a></li>
-  </ul>
-  <button class="nav-cart" onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})">
-    🛍 اطلب الآن
-  </button>
-</nav>
+<body class="antialiased">
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-bg"></div>
-  <svg class="mandala-bg" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g transform="translate(200,200)">
-      <circle cx="0" cy="0" r="190" stroke="#C9A84C" stroke-width="0.5"/>
-      <circle cx="0" cy="0" r="150" stroke="#C9A84C" stroke-width="0.5"/>
-      <circle cx="0" cy="0" r="110" stroke="#C9A84C" stroke-width="0.5"/>
-      <circle cx="0" cy="0" r="70" stroke="#C9A84C" stroke-width="0.5"/>
-      <g id="petal">
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(22.5,0,0)"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(45,0,0)"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(67.5,0,0)"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(90,0,0)"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(112.5,0,0)"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(135,0,0)"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(157.5,0,0)"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(180,0,0)"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(202.5,0,0)"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(225,0,0)"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(247.5,0,0)"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(270,0,0)"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(292.5,0,0)"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(315,0,0)"/>
-        <ellipse cx="0" cy="-130" rx="12" ry="50" fill="#C9A84C" transform="rotate(337.5,0,0)"/>
+<!-- ================= HEADER / NAV ================= -->
+<header id="siteHeader" class="fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur border-b border-line transition-shadow duration-300">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+    <div class="flex items-center justify-between h-20">
+      <a href="#accueil" class="flex items-center gap-3 group shrink-0">
+        <img src="assets/logo.png" alt="Logo DiwanE Al Maaref" class="h-14 w-14 object-contain">
+        <span class="hidden sm:flex flex-col leading-tight">
+          <span class="font-display font-semibold text-lg text-navy tracking-tight">DiwanE Al Maaref</span>
+          <span class="text-[11px] uppercase tracking-[0.16em] text-gold-dark font-semibold">Soutien Scolaire</span>
+        </span>
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-9 font-semibold text-[15px] text-navy/80">
+        <a href="#accueil" class="hover:text-gold-dark transition-colors">Accueil</a>
+        <a href="#apropos" class="hover:text-gold-dark transition-colors">À propos</a>
+        <a href="#programmes" class="hover:text-gold-dark transition-colors">Nos Programmes</a>
+        <a href="#calendrier" class="hover:text-gold-dark transition-colors">Calendrier</a>
+        <a href="#temoignages" class="hover:text-gold-dark transition-colors">Témoignages</a>
+        <a href="#contact" class="hover:text-gold-dark transition-colors">Contact</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="#contact" class="hidden sm:inline-flex items-center gap-2 bg-navy hover:bg-navy-700 text-white text-sm font-bold px-5 py-3 rounded-full transition-colors shadow-lg shadow-navy/20">
+          Portail d'Inscription
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <button id="menuBtn" aria-label="Ouvrir le menu" aria-expanded="false" class="lg:hidden w-11 h-11 grid place-items-center rounded-full border border-line text-navy">
+          <svg id="menuIcon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobileMenu" class="lg:hidden hidden border-t border-line bg-white">
+    <nav class="px-5 py-4 flex flex-col gap-1 font-semibold text-navy">
+      <a href="#accueil" class="py-3 border-b border-line/70">Accueil</a>
+      <a href="#apropos" class="py-3 border-b border-line/70">À propos</a>
+      <a href="#programmes" class="py-3 border-b border-line/70">Nos Programmes</a>
+      <a href="#calendrier" class="py-3 border-b border-line/70">Calendrier</a>
+      <a href="#temoignages" class="py-3 border-b border-line/70">Témoignages</a>
+      <a href="#contact" class="py-3 border-b border-line/70">Contact</a>
+      <a href="#contact" class="mt-3 text-center bg-navy text-white font-bold px-5 py-3 rounded-full">Portail d'Inscription</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HERO / CAROUSEL ================= -->
+<section id="accueil" class="relative pt-20">
+  <div class="splide" aria-label="Présentation de l'institution">
+    <div class="splide__track">
+      <ul class="splide__list">
+
+        <li class="splide__slide">
+          <div class="relative h-[86vh] min-h-[560px] max-h-[820px] w-full overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1800&auto=format&fit=crop" alt="Salle de classe moderne et lumineuse" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-navy-900/85 via-navy-900/55 to-navy-900/20"></div>
+          </div>
+        </li>
+
+        <li class="splide__slide">
+          <div class="relative h-[86vh] min-h-[560px] max-h-[820px] w-full overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1800&auto=format&fit=crop" alt="Élèves en séance de travail encadrée" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-navy-900/85 via-navy-900/55 to-navy-900/20"></div>
+          </div>
+        </li>
+
+        <li class="splide__slide">
+          <div class="relative h-[86vh] min-h-[560px] max-h-[820px] w-full overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=1800&auto=format&fit=crop" alt="Étudiant en préparation d'examen" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-navy-900/85 via-navy-900/55 to-navy-900/20"></div>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+
+  <!-- Overlaid content -->
+  <div class="pointer-events-none absolute inset-0 top-20 flex items-center">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 w-full">
+      <div class="pointer-events-auto max-w-xl bg-white/12 backdrop-blur-md border border-white/25 rounded-3xl p-8 sm:p-10 shadow-2xl relative overflow-hidden">
+        <div class="sunburst opacity-25 -z-0">
+          <svg viewBox="0 0 400 400" fill="none">
+            <g stroke="#F0A93C" stroke-width="2">
+              <line x1="200" y1="0" x2="200" y2="60"/><line x1="200" y1="400" x2="200" y2="340"/>
+              <line x1="0" y1="200" x2="60" y2="200"/><line x1="400" y1="200" x2="340" y2="200"/>
+              <line x1="58" y1="58" x2="100" y2="100"/><line x1="342" y1="58" x2="300" y2="100"/>
+              <line x1="58" y1="342" x2="100" y2="300"/><line x1="342" y1="342" x2="300" y2="300"/>
+            </g>
+          </svg>
+        </div>
+        <span class="relative eyebrow text-gold-light text-xs font-extrabold uppercase">Institution de Soutien Scolaire</span>
+        <h1 class="relative font-display text-white text-4xl sm:text-5xl font-semibold leading-[1.08] mt-3">
+          Cultiver le savoir,<br> éclairer chaque avenir.
+        </h1>
+        <p class="relative text-white/85 mt-5 text-base sm:text-[17px] leading-relaxed">
+          DiwanE Al Maaref accompagne vos enfants du primaire au baccalauréat avec des enseignants qualifiés, une méthode structurée et un suivi individuel à chaque étape.
+        </p>
+        <div class="relative flex flex-wrap gap-4 mt-8">
+          <a href="#contact" class="inline-flex items-center gap-2 bg-gold hover:bg-gold-dark text-navy-900 font-bold px-6 py-3.5 rounded-full transition-colors">
+            Réserver un bilan gratuit
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#programmes" class="inline-flex items-center gap-2 border border-white/50 text-white font-bold px-6 py-3.5 rounded-full hover:bg-white/10 transition-colors">
+            Découvrir nos programmes
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TRUST STRIP ================= -->
+<section class="bg-navy-900 py-4 overflow-hidden border-b border-white/10">
+  <div class="flex whitespace-nowrap marquee-track">
+    <div class="flex items-center gap-16 pr-16">
+      <span class="text-white/60 font-semibold text-sm tracking-wide">Programme national &amp; missions internationales</span>
+      <span class="text-gold text-sm">✦</span>
+      <span class="text-white/60 font-semibold text-sm tracking-wide">Suivi individualisé par niveau</span>
+      <span class="text-gold text-sm">✦</span>
+      <span class="text-white/60 font-semibold text-sm tracking-wide">Préparation Examens &amp; Baccalauréat</span>
+      <span class="text-gold text-sm">✦</span>
+      <span class="text-white/60 font-semibold text-sm tracking-wide">Petits groupes, grande attention</span>
+      <span class="text-gold text-sm">✦</span>
+    </div>
+    <div class="flex items-center gap-16 pr-16" aria-hidden="true">
+      <span class="text-white/60 font-semibold text-sm tracking-wide">Programme national &amp; missions internationales</span>
+      <span class="text-gold text-sm">✦</span>
+      <span class="text-white/60 font-semibold text-sm tracking-wide">Suivi individualisé par niveau</span>
+      <span class="text-gold text-sm">✦</span>
+      <span class="text-white/60 font-semibold text-sm tracking-wide">Préparation Examens &amp; Baccalauréat</span>
+      <span class="text-gold text-sm">✦</span>
+      <span class="text-white/60 font-semibold text-sm tracking-wide">Petits groupes, grande attention</span>
+      <span class="text-gold text-sm">✦</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="apropos" class="py-24 sm:py-28 bg-white relative overflow-hidden">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-16 items-center">
+
+    <div class="reveal relative order-2 lg:order-1">
+      <div class="relative rounded-[2rem] overflow-hidden shadow-2xl shadow-navy/15 border-8 border-white ring-1 ring-line">
+        <img src="https://images.unsplash.com/photo-1571260899304-425eee4c7efc?q=80&w=1200&auto=format&fit=crop" alt="Enseignant accompagnant un élève" class="w-full h-[460px] object-cover">
+      </div>
+      <div class="hidden sm:flex absolute -bottom-8 -left-8 bg-white rounded-2xl shadow-xl border border-line p-5 items-center gap-4 w-64">
+        <div class="w-12 h-12 rounded-full bg-gold/15 grid place-items-center shrink-0">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.6 6.6L21 9l-5 4.4L17.4 21 12 17.3 6.6 21 8 13.4 3 9l6.4-.4L12 2z" fill="#F0A93C"/></svg>
+        </div>
+        <div>
+          <p class="font-display font-bold text-navy text-lg leading-none">95%</p>
+          <p class="text-xs text-ink/60 mt-1 leading-snug">de réussite aux examens de nos élèves accompagnés</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal order-1 lg:order-2">
+      <span class="eyebrow text-gold-dark text-xs font-extrabold uppercase">Qui sommes-nous</span>
+      <h2 class="gold-underline font-display text-navy text-3xl sm:text-[2.6rem] font-semibold leading-tight mt-4 pb-4">
+        Une institution bâtie sur la rigueur et la bienveillance
+      </h2>
+      <p class="text-ink/70 leading-relaxed mt-8 text-[16px]">
+        DiwanE Al Maaref — « le foyer du savoir » — est une institution de soutien scolaire fondée pour offrir à chaque élève un accompagnement pédagogique exigeant et humain. Notre mission est simple&nbsp;: transformer les difficultés scolaires en réussites durables, à travers un encadrement personnalisé et une pédagogie moderne adaptée au rythme de chaque enfant.
+      </p>
+      <p class="text-ink/70 leading-relaxed mt-4 text-[16px]">
+        Comme le suggère notre emblème — des mains qui portent et un rayonnement qui guide — nous plaçons le soutien humain au cœur de notre méthode&nbsp;: écouter, encadrer, et éclairer le chemin de chaque élève vers l'excellence.
+      </p>
+
+      <div class="grid sm:grid-cols-3 gap-5 mt-10">
+        <div class="flex flex-col gap-2">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 4.9-9 4.9-9-4.9L12 3z" stroke="#1B1464" stroke-width="1.8" stroke-linejoin="round"/><path d="M6 10.5V16c0 1.2 2.7 3 6 3s6-1.8 6-3v-5.5" stroke="#1B1464" stroke-width="1.8"/></svg>
+          <p class="font-bold text-navy text-sm">Excellence</p>
+          <p class="text-ink/60 text-xs leading-relaxed">Un standard pédagogique élevé, aligné sur les exigences du programme national.</p>
+        </div>
+        <div class="flex flex-col gap-2">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7.5-4.6-10-9.1C.5 8.2 2.6 4.5 6.4 4.1c2-.2 3.7.8 5.6 3 1.9-2.2 3.6-3.2 5.6-3 3.8.4 5.9 4.1 4.4 7.8C19.5 16.4 12 21 12 21z" stroke="#5B3AA6" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          <p class="font-bold text-navy text-sm">Bienveillance</p>
+          <p class="text-ink/60 text-xs leading-relaxed">Un climat de confiance où chaque élève progresse à son propre rythme.</p>
+        </div>
+        <div class="flex flex-col gap-2">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#F0A93C" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="#F0A93C" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <p class="font-bold text-navy text-sm">Régularité</p>
+          <p class="text-ink/60 text-xs leading-relaxed">Un suivi continu et des bilans réguliers partagés avec les familles.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROGRAMS ================= -->
+<section id="programmes" class="py-24 sm:py-28 bg-mist relative">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+    <div class="reveal max-w-2xl mx-auto text-center">
+      <span class="eyebrow text-gold-dark text-xs font-extrabold uppercase">Nos Programmes</span>
+      <h2 class="gold-underline center font-display text-navy text-3xl sm:text-[2.6rem] font-semibold leading-tight mt-4 pb-4">
+        Un accompagnement pour chaque étape du parcours
+      </h2>
+      <p class="text-ink/60 mt-8 text-[15.5px]">Des parcours structurés, conçus autour du programme officiel et des besoins réels de chaque niveau.</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+
+      <article class="reveal card-lift group bg-white rounded-2xl border border-line p-7 flex flex-col">
+        <div class="w-14 h-14 rounded-xl bg-navy grid place-items-center mb-6">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h9" stroke="#F0A93C" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-navy text-xl">Primaire</h3>
+        <p class="text-xs uppercase tracking-wide text-gold-dark font-bold mt-1">CP — CM2</p>
+        <p class="text-ink/60 text-sm leading-relaxed mt-4 flex-1">Fondamentaux du lire-écrire-compter, méthodologie du travail et confiance en soi dès les premières années.</p>
+        <a href="#contact" class="mt-6 inline-flex items-center gap-2 text-navy font-bold text-sm group-hover:text-gold-dark transition-colors">
+          En savoir plus <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </article>
+
+      <article class="reveal card-lift group bg-white rounded-2xl border border-line p-7 flex flex-col">
+        <div class="w-14 h-14 rounded-xl bg-navy grid place-items-center mb-6">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 4.9-9 4.9-9-4.9L12 3z" stroke="#F0A93C" stroke-width="2" stroke-linejoin="round"/><path d="M6 10.5V16c0 1.2 2.7 3 6 3s6-1.8 6-3v-5.5" stroke="#F0A93C" stroke-width="2"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-navy text-xl">Collège</h3>
+        <p class="text-xs uppercase tracking-wide text-gold-dark font-bold mt-1">1AC — 3AC</p>
+        <p class="text-ink/60 text-sm leading-relaxed mt-4 flex-1">Renforcement disciplinaire, préparation au tronc commun et accompagnement méthodologique renforcé.</p>
+        <a href="#contact" class="mt-6 inline-flex items-center gap-2 text-navy font-bold text-sm group-hover:text-gold-dark transition-colors">
+          En savoir plus <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </article>
+
+      <article class="reveal card-lift group bg-white rounded-2xl border border-line p-7 flex flex-col">
+        <div class="w-14 h-14 rounded-xl bg-navy grid place-items-center mb-6">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 19V6a2 2 0 012-2h9l5 5v10a2 2 0 01-2 2H6a2 2 0 01-2-2z" stroke="#F0A93C" stroke-width="2" stroke-linejoin="round"/><path d="M15 4v5h5" stroke="#F0A93C" stroke-width="2" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-navy text-xl">Lycée</h3>
+        <p class="text-xs uppercase tracking-wide text-gold-dark font-bold mt-1">Tronc Commun — 2 Bac</p>
+        <p class="text-ink/60 text-sm leading-relaxed mt-4 flex-1">Approfondissement par filière, entraînement intensif et stratégies pour aborder chaque contrôle avec sérénité.</p>
+        <a href="#contact" class="mt-6 inline-flex items-center gap-2 text-navy font-bold text-sm group-hover:text-gold-dark transition-colors">
+          En savoir plus <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </article>
+
+      <article class="reveal card-lift group bg-white rounded-2xl border border-line p-7 flex flex-col">
+        <div class="w-14 h-14 rounded-xl bg-navy grid place-items-center mb-6">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.6 6.6L21 9l-5 4.4L17.4 21 12 17.3 6.6 21 8 13.4 3 9l6.4-.4L12 2z" stroke="#F0A93C" stroke-width="2" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-navy text-xl">Préparation Examens</h3>
+        <p class="text-xs uppercase tracking-wide text-gold-dark font-bold mt-1">Bac &amp; Concours</p>
+        <p class="text-ink/60 text-sm leading-relaxed mt-4 flex-1">Sessions intensives, examens blancs chronométrés et coaching individuel pour aborder le jour J en confiance.</p>
+        <a href="#contact" class="mt-6 inline-flex items-center gap-2 text-navy font-bold text-sm group-hover:text-gold-dark transition-colors">
+          En savoir plus <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHY CHOOSE US ================= -->
+<section class="py-24 sm:py-28 bg-navy-900 relative overflow-hidden">
+  <div class="sunburst opacity-[0.06]">
+    <svg viewBox="0 0 800 800" fill="none">
+      <g stroke="#F0A93C" stroke-width="1.5">
+        <circle cx="400" cy="400" r="360"/>
+        <circle cx="400" cy="400" r="280"/>
+        <circle cx="400" cy="400" r="200"/>
       </g>
-    </g>
-  </svg>
-
-  <div class="hero-content">
-    <span class="hero-eyebrow">✦ صابون طبيعي مغربي فاخر ✦</span>
-    <h1 class="hero-title">MAYSOR</h1>
-    <p class="hero-title-ar">ميسور — الحب الميسّر</p>
-    <div class="hero-divider">
-      <div class="hero-divider-line"></div>
-      <div class="hero-divider-dot"></div>
-      <div class="hero-divider-line"></div>
-    </div>
-    <p class="hero-desc">
-      صابون يُصنع بيدين وقلب — من خامات المغرب الأصيلة،<br>
-      بنكهات تُوقظ المشاعر وتُسعد من تحب.
-    </p>
-    <div class="hero-btns">
-      <a href="#products" class="btn-primary">اكتشف المنتجات</a>
-      <a href="#gifts" class="btn-outline">علب الهدايا</a>
-    </div>
+    </svg>
   </div>
-</section>
-
-<!-- STRIP -->
-<div class="strip">
-  <div class="strip-inner">
-    <span class="strip-item">✦ صابون طبيعي 100%</span>
-    <span class="strip-item">✦ خامات مغربية أصيلة</span>
-    <span class="strip-item">✦ صلب وسائل</span>
-    <span class="strip-item">✦ هدايا للعشاق</span>
-    <span class="strip-item">✦ شحن لجميع المدن</span>
-    <span class="strip-item">✦ صابون طبيعي 100%</span>
-    <span class="strip-item">✦ خامات مغربية أصيلة</span>
-    <span class="strip-item">✦ صلب وسائل</span>
-    <span class="strip-item">✦ هدايا للعشاق</span>
-    <span class="strip-item">✦ شحن لجميع المدن</span>
-  </div>
-</div>
-
-<!-- ABOUT -->
-<section class="section section-center" id="about">
-  <span class="eyebrow">لماذا MAYSOR</span>
-  <h2 class="section-title">الصابون الطبيعي كما يجب أن يكون</h2>
-  <p class="section-desc">نشتري الصابون الخام ونضيف إليه نكهات طبيعية مختارة بعناية — كل قطعة تُصنع بيدين بأسلوب يجمع بين الأصالة المغربية والروح الشرقية.</p>
-  <div class="about-grid">
-    <div class="about-card">
-      <span class="about-icon">🌿</span>
-      <h3 class="about-card-title">خامات طبيعية</h3>
-      <p class="about-card-desc">نختار أجود الخامات — أرغان مغربي، زيوت طبيعية، ونكهات نباتية خالصة بدون مواد كيميائية ضارة.</p>
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 relative">
+    <div class="reveal max-w-2xl">
+      <span class="eyebrow text-gold text-xs font-extrabold uppercase">Pourquoi nous choisir</span>
+      <h2 class="font-display text-white text-3xl sm:text-[2.6rem] font-semibold leading-tight mt-4">
+        Une méthode pensée pour la réussite de votre enfant
+      </h2>
     </div>
-    <div class="about-card">
-      <span class="about-icon">🤲</span>
-      <h3 class="about-card-title">صُنع بالحب</h3>
-      <p class="about-card-desc">كل قطعة صابون تُصنع يدوياً بعناية فائقة — ليست مجرد منتج، بل هدية تحمل مشاعر حقيقية.</p>
-    </div>
-    <div class="about-card">
-      <span class="about-icon">🎁</span>
-      <h3 class="about-card-title">تغليف فاخر</h3>
-      <p class="about-card-desc">نُغلّف كل طلب بأسلوب رومانسي مميز — علب أنيقة وبطاقة رسالة خاصة بكلماتك أنت.</p>
-    </div>
-  </div>
-</section>
 
-<!-- PRODUCTS -->
-<section class="products-section" id="products">
-  <div style="text-align:center">
-    <span class="eyebrow">تشكيلتنا</span>
-    <h2 class="section-title">منتجات MAYSOR</h2>
-    <p class="section-desc">صلب وسائل — كل منتج له قصة وعطر يسكن القلب</p>
-  </div>
-  <div class="products-grid">
-
-    <div class="product-card">
-      <div class="product-img" style="background: linear-gradient(135deg, #FAF0F2, #F3E4EA);">
-        <span class="product-badge">الأكثر مبيعاً</span>
-        <div class="product-visual">🌹</div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+      <div class="reveal bg-white/[0.06] border border-white/10 rounded-2xl p-7">
+        <p class="font-display stat-num text-gold text-4xl font-bold">95%</p>
+        <p class="text-white font-semibold mt-2 text-sm">Taux de réussite</p>
+        <p class="text-white/55 text-xs mt-2 leading-relaxed">aux examens de fin d'année pour nos élèves suivis toute l'année.</p>
       </div>
-      <div class="product-info">
-        <h3 class="product-name">Rose du Maroc</h3>
-        <p class="product-name-ar">وردة المغرب — صلب</p>
-        <p class="product-desc">صابون صلب على شكل وردة — بعطر ورد الداودية المغربي الخالص مع زيت الأرغان المرطب.</p>
-        <div class="product-footer">
-          <div class="product-price">45 <span>درهم</span></div>
-          <button class="add-btn" onclick="addToCart('وردة المغرب')">أضف للطلب +</button>
+      <div class="reveal bg-white/[0.06] border border-white/10 rounded-2xl p-7">
+        <p class="font-display stat-num text-gold text-4xl font-bold">40+</p>
+        <p class="text-white font-semibold mt-2 text-sm">Enseignants qualifiés</p>
+        <p class="text-white/55 text-xs mt-2 leading-relaxed">sélectionnés pour leur expertise et leur pédagogie.</p>
+      </div>
+      <div class="reveal bg-white/[0.06] border border-white/10 rounded-2xl p-7">
+        <p class="font-display stat-num text-gold text-4xl font-bold">6</p>
+        <p class="text-white font-semibold mt-2 text-sm">Élèves par groupe</p>
+        <p class="text-white/55 text-xs mt-2 leading-relaxed">en moyenne, pour une attention réellement individualisée.</p>
+      </div>
+      <div class="reveal bg-white/[0.06] border border-white/10 rounded-2xl p-7">
+        <p class="font-display stat-num text-gold text-4xl font-bold">1200+</p>
+        <p class="text-white font-semibold mt-2 text-sm">Élèves accompagnés</p>
+        <p class="text-white/55 text-xs mt-2 leading-relaxed">depuis la création de l'institution, tous niveaux confondus.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CALENDAR / SCHEDULE ================= -->
+<section id="calendrier" class="py-24 sm:py-28 bg-white">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-5 gap-14">
+    <div class="reveal lg:col-span-2">
+      <span class="eyebrow text-gold-dark text-xs font-extrabold uppercase">Organisation</span>
+      <h2 class="gold-underline font-display text-navy text-3xl sm:text-[2.4rem] font-semibold leading-tight mt-4 pb-4">
+        Un rythme hebdomadaire clair et adapté
+      </h2>
+      <p class="text-ink/70 leading-relaxed mt-8 text-[15.5px]">
+        Les séances sont réparties en petits groupes selon le niveau et la matière, avec des créneaux fixes chaque semaine pour ancrer de bonnes habitudes de travail.
+      </p>
+      <div class="mt-8 flex items-start gap-4">
+        <div class="w-11 h-11 rounded-full bg-gold/15 grid place-items-center shrink-0 mt-1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#D98F1F" stroke-width="1.8"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#D98F1F" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <p class="font-bold text-navy text-sm">Calendrier trimestriel</p>
+          <p class="text-ink/60 text-xs mt-1 leading-relaxed">Un planning transmis en début de trimestre, avec bilans réguliers pour les familles.</p>
         </div>
       </div>
     </div>
 
-    <div class="product-card">
-      <div class="product-img" style="background: linear-gradient(135deg, #EAF3F0, #D8EDE8);">
-        <div class="product-visual">🌿</div>
-      </div>
-      <div class="product-info">
-        <h3 class="product-name">Rayhan Beldi</h3>
-        <p class="product-name-ar">ريحان بلدي — صلب</p>
-        <p class="product-desc">الريحان المغربي الأصيل في قالب صابون فاخر — رائحة تُذكّر بأعراس المغرب وأيامه الجميلة.</p>
-        <div class="product-footer">
-          <div class="product-price">45 <span>درهم</span></div>
-          <button class="add-btn" onclick="addToCart('ريحان بلدي')">أضف للطلب +</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="product-card">
-      <div class="product-img" style="background: linear-gradient(135deg, #F5EAF7, #EDD8F0);">
-        <span class="product-badge">جديد</span>
-        <div class="product-visual">💜</div>
-      </div>
-      <div class="product-info">
-        <h3 class="product-name">Oud & Amber</h3>
-        <p class="product-name-ar">عود وعنبر — صلب</p>
-        <p class="product-desc">مزيج من العود الشرقي والعنبر الدافئ — صابون يُناسب الرجل والمرأة ويدوم عطره طويلاً.</p>
-        <div class="product-footer">
-          <div class="product-price">55 <span>درهم</span></div>
-          <button class="add-btn" onclick="addToCart('عود وعنبر')">أضف للطلب +</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="product-card">
-      <div class="product-img" style="background: linear-gradient(135deg, #FAEEDA, #F5E0B8);">
-        <div class="product-visual">🍊</div>
-      </div>
-      <div class="product-info">
-        <h3 class="product-name">Zahr Limon</h3>
-        <p class="product-name-ar">زهر الليمون — سائل</p>
-        <p class="product-desc">صابون سائل فاخر بعطر زهر الليمون المغربي — منعش ومنظف ومرطب في آن واحد.</p>
-        <div class="product-footer">
-          <div class="product-price">60 <span>درهم</span></div>
-          <button class="add-btn" onclick="addToCart('زهر الليمون سائل')">أضف للطلب +</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="product-card">
-      <div class="product-img" style="background: linear-gradient(135deg, #EAF3DE, #D5EBC0);">
-        <div class="product-visual">🌱</div>
-      </div>
-      <div class="product-info">
-        <h3 class="product-name">Nana Marrakech</h3>
-        <p class="product-name-ar">نعناع مراكش — سائل</p>
-        <p class="product-desc">النعناع المغربي الطازج في صابون سائل — منعش ككأس أتاي ساخن في يوم شتائي بارد.</p>
-        <div class="product-footer">
-          <div class="product-price">60 <span>درهم</span></div>
-          <button class="add-btn" onclick="addToCart('نعناع مراكش سائل')">أضف للطلب +</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="product-card">
-      <div class="product-img" style="background: linear-gradient(135deg, #F9EEF0, #F5D8DD);">
-        <span class="product-badge">محدود</span>
-        <div class="product-visual">🎁</div>
-      </div>
-      <div class="product-info">
-        <h3 class="product-name">Love Box</h3>
-        <p class="product-name-ar">علبة الحب — هدية</p>
-        <p class="product-desc">صابون صلب + سائل + بطاقة رسالة حب بخط يدك — الهدية المثالية لكل مناسبة رومانسية.</p>
-        <div class="product-footer">
-          <div class="product-price">120 <span>درهم</span></div>
-          <button class="add-btn" onclick="addToCart('علبة الحب')">أضف للطلب +</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- SCENTS -->
-<section class="scents-section section-center" id="scents">
-  <span class="eyebrow">عطورنا</span>
-  <h2 class="section-title">اختر نكهتك المفضلة</h2>
-  <p class="section-desc">كل نكهاتنا مستوحاة من طبيعة المغرب وتراثه العطري الأصيل</p>
-  <div class="scents-grid">
-    <div class="scent-pill active">🌹 ورد الداودية</div>
-    <div class="scent-pill">🌿 ريحان مغربي</div>
-    <div class="scent-pill">🍊 زهر البرتقال</div>
-    <div class="scent-pill">🌙 عود وعنبر</div>
-    <div class="scent-pill">🌱 نعناع مراكش</div>
-    <div class="scent-pill">🤍 ياسمين</div>
-    <div class="scent-pill">🟡 زعفران</div>
-    <div class="scent-pill">🍂 صندل دافئ</div>
-    <div class="scent-pill">💛 أرغان وفانيليا</div>
-  </div>
-</section>
-
-<!-- GIFT -->
-<section class="gift-section" id="gifts">
-  <svg class="gift-mandala" viewBox="0 0 400 400">
-    <g transform="translate(200,200)">
-      <circle r="190" stroke="#C9A84C" stroke-width="1" fill="none"/>
-      <circle r="130" stroke="#C9A84C" stroke-width="0.5" fill="none"/>
-      <ellipse cx="0" cy="-160" rx="15" ry="40" fill="#C9A84C"/>
-      <ellipse cx="0" cy="-160" rx="15" ry="40" fill="#C9A84C" transform="rotate(30)"/>
-      <ellipse cx="0" cy="-160" rx="15" ry="40" fill="#C9A84C" transform="rotate(60)"/>
-      <ellipse cx="0" cy="-160" rx="15" ry="40" fill="#C9A84C" transform="rotate(90)"/>
-      <ellipse cx="0" cy="-160" rx="15" ry="40" fill="#C9A84C" transform="rotate(120)"/>
-      <ellipse cx="0" cy="-160" rx="15" ry="40" fill="#C9A84C" transform="rotate(150)"/>
-      <ellipse cx="0" cy="-160" rx="15" ry="40" fill="#C9A84C" transform="rotate(180)"/>
-      <ellipse cx="0" cy="-160" rx="15" ry="40" fill="#C9A84C" transform="rotate(210)"/>
-      <ellipse cx="0" cy="-160" rx="15" ry="40" fill="#C9A84C" transform="rotate(240)"/>
-      <ellipse cx="0" cy="-160" rx="15" ry="40" fill="#C9A84C" transform="rotate(270)"/>
-      <ellipse cx="0" cy="-160" rx="15" ry="40" fill="#C9A84C" transform="rotate(300)"/>
-      <ellipse cx="0" cy="-160" rx="15" ry="40" fill="#C9A84C" transform="rotate(330)"/>
-    </g>
-  </svg>
-  <div style="position:relative; z-index:2;">
-    <span class="eyebrow" style="color:var(--gold)">✦ علب الهدايا ✦</span>
-    <h2 class="section-title">أهدِ من تحب لحظة لا تُنسى</h2>
-    <p class="section-desc" style="margin:0 auto 32px;">نُحضّر لك علبة هدية بأسلوب رومانسي مميز — صابون فاخر + رسالة بكلماتك + تغليف أنيق يصل جاهزاً للإهداء.</p>
-    <div class="gift-tags">
-      <span class="gift-tag">💍 خطوبة</span>
-      <span class="gift-tag">💒 زفاف</span>
-      <span class="gift-tag">❤️ عيد الحب</span>
-      <span class="gift-tag">🎂 عيد ميلاد</span>
-      <span class="gift-tag">🌸 يوم الأم</span>
-      <span class="gift-tag">✨ هدية عامة</span>
-    </div>
-    <a href="#order" class="gift-btn">اطلب علبة هدية الآن</a>
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section class="testimonials section-center" id="reviews">
-  <span class="eyebrow">آراء عملائنا</span>
-  <h2 class="section-title">قالوا عن MAYSOR</h2>
-  <div class="testimonials-grid">
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"أهدته لزوجي في ذكرى زواجنا — انبهر من التغليف الجميل والرائحة الرائعة. قال إنها أجمل هدية تلقاها."</p>
-      <div class="testimonial-name">سارة م.</div>
-      <div class="testimonial-loc">الدار البيضاء</div>
-    </div>
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"صابون وردة المغرب لا مثيل له — الرائحة طبيعية تماماً وتدوم لفترة طويلة. سأطلب دائماً من MAYSOR."</p>
-      <div class="testimonial-name">أمينة ك.</div>
-      <div class="testimonial-loc">مراكش</div>
-    </div>
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"طلبت علبة الحب هدية لصديقتي — كانت مفاجأة جميلة جداً. الجودة عالية والسعر معقول جداً مقارنة بالمتاجر."</p>
-      <div class="testimonial-name">يوسف ب.</div>
-      <div class="testimonial-loc">الرباط</div>
+    <div class="reveal lg:col-span-3 overflow-x-auto rounded-2xl border border-line">
+      <table class="w-full text-sm min-w-[560px]">
+        <thead>
+          <tr class="bg-navy text-white text-left">
+            <th class="py-4 px-5 font-semibold text-xs uppercase tracking-wide">Créneau</th>
+            <th class="py-4 px-5 font-semibold text-xs uppercase tracking-wide">Lun / Mer / Ven</th>
+            <th class="py-4 px-5 font-semibold text-xs uppercase tracking-wide">Mar / Jeu</th>
+            <th class="py-4 px-5 font-semibold text-xs uppercase tracking-wide">Samedi</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-line">
+          <tr class="hover:bg-mist transition-colors">
+            <td class="py-4 px-5 font-bold text-navy">16h30 – 18h00</td>
+            <td class="py-4 px-5 text-ink/70">Primaire</td>
+            <td class="py-4 px-5 text-ink/70">Collège</td>
+            <td class="py-4 px-5 text-ink/70">Examens blancs</td>
+          </tr>
+          <tr class="hover:bg-mist transition-colors">
+            <td class="py-4 px-5 font-bold text-navy">18h15 – 19h45</td>
+            <td class="py-4 px-5 text-ink/70">Collège</td>
+            <td class="py-4 px-5 text-ink/70">Lycée</td>
+            <td class="py-4 px-5 text-ink/70">Préparation Bac</td>
+          </tr>
+          <tr class="hover:bg-mist transition-colors">
+            <td class="py-4 px-5 font-bold text-navy">20h00 – 21h30</td>
+            <td class="py-4 px-5 text-ink/70">Lycée / Bac</td>
+            <td class="py-4 px-5 text-ink/70">Soutien intensif</td>
+            <td class="py-4 px-5 text-ink/70">—</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
 
-<!-- ORDER -->
-<section class="order-section section-center" id="order">
-  <span class="eyebrow">اطلب الآن</span>
-  <h2 class="section-title">ابعث طلبك مباشرة</h2>
-  <p class="section-desc">نصلك في جميع مدن المغرب خلال 2-3 أيام عمل</p>
+<!-- ================= TESTIMONIALS ================= -->
+<section id="temoignages" class="py-24 sm:py-28 bg-mist">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8">
+    <div class="reveal max-w-2xl mx-auto text-center">
+      <span class="eyebrow text-gold-dark text-xs font-extrabold uppercase">Témoignages</span>
+      <h2 class="gold-underline center font-display text-navy text-3xl sm:text-[2.6rem] font-semibold leading-tight mt-4 pb-4">
+        Ce que disent les familles
+      </h2>
+    </div>
 
-  <div class="order-form">
-    <div class="form-group">
-      <label class="form-label">الاسم الكامل</label>
-      <input type="text" class="form-input" placeholder="اكتب اسمك هنا..." id="fname">
+    <div class="grid md:grid-cols-3 gap-6 mt-16">
+      <figure class="reveal card-lift bg-white rounded-2xl border border-line p-7">
+        <div class="flex gap-1 text-gold mb-4" aria-hidden="true">★★★★★</div>
+        <blockquote class="text-ink/75 text-sm leading-relaxed">« Depuis qu'il suit les séances de DiwanE Al Maaref, mon fils a repris confiance en lui. Les enseignants sont très à l'écoute et le suivi est vraiment sérieux. »</blockquote>
+        <figcaption class="mt-6 flex items-center gap-3">
+          <div class="w-11 h-11 rounded-full bg-navy/10 grid place-items-center font-display font-bold text-navy">S.</div>
+          <div>
+            <p class="font-bold text-navy text-sm">Samira B.</p>
+            <p class="text-ink/50 text-xs">Maman d'un élève de 3AC</p>
+          </div>
+        </figcaption>
+      </figure>
+
+      <figure class="reveal card-lift bg-white rounded-2xl border border-line p-7">
+        <div class="flex gap-1 text-gold mb-4" aria-hidden="true">★★★★★</div>
+        <blockquote class="text-ink/75 text-sm leading-relaxed">« La préparation aux examens blancs m'a énormément aidée à gérer le stress du Bac. J'ai obtenu bien plus que ce que j'espérais. »</blockquote>
+        <figcaption class="mt-6 flex items-center gap-3">
+          <div class="w-11 h-11 rounded-full bg-navy/10 grid place-items-center font-display font-bold text-navy">Y.</div>
+          <div>
+            <p class="font-bold text-navy text-sm">Yassine M.</p>
+            <p class="text-ink/50 text-xs">Élève, 2 Bac Sciences</p>
+          </div>
+        </figcaption>
+      </figure>
+
+      <figure class="reveal card-lift bg-white rounded-2xl border border-line p-7">
+        <div class="flex gap-1 text-gold mb-4" aria-hidden="true">★★★★★</div>
+        <blockquote class="text-ink/75 text-sm leading-relaxed">« Un cadre chaleureux et exigeant à la fois. Le rapport hebdomadaire nous permet vraiment de suivre les progrès de notre fille. »</blockquote>
+        <figcaption class="mt-6 flex items-center gap-3">
+          <div class="w-11 h-11 rounded-full bg-navy/10 grid place-items-center font-display font-bold text-navy">K.</div>
+          <div>
+            <p class="font-bold text-navy text-sm">Karim A.</p>
+            <p class="text-ink/50 text-xs">Papa d'une élève de CM2</p>
+          </div>
+        </figcaption>
+      </figure>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">رقم الهاتف</label>
-        <input type="tel" class="form-input" placeholder="06 xx xx xx xx" id="fphone">
-      </div>
-      <div class="form-group">
-        <label class="form-label">المدينة</label>
-        <select class="form-select" id="fcity">
-          <option value="">اختر مدينتك</option>
-          <option>الرباط</option>
-          <option>الدار البيضاء</option>
-          <option>مراكش</option>
-          <option>فاس</option>
-          <option>طنجة</option>
-          <option>أكادير</option>
-          <option>القنيطرة</option>
-          <option>مدينة أخرى</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">المنتج المطلوب</label>
-      <select class="form-select" id="fproduct">
-        <option value="">اختر المنتج</option>
-        <option>🌹 وردة المغرب — صلب (45 درهم)</option>
-        <option>🌿 ريحان بلدي — صلب (45 درهم)</option>
-        <option>💜 عود وعنبر — صلب (55 درهم)</option>
-        <option>🍊 زهر الليمون — سائل (60 درهم)</option>
-        <option>🌱 نعناع مراكش — سائل (60 درهم)</option>
-        <option>🎁 علبة الحب — هدية (120 درهم)</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">ملاحظات إضافية (اختياري)</label>
-      <input type="text" class="form-input" placeholder="نكهة مخصوصة؟ رسالة في الهدية؟..." id="fnotes">
-    </div>
-    <button class="form-submit" onclick="submitOrder()">أرسل الطلب ✦</button>
-    <p class="form-note">سنتواصل معك عبر واتساب لتأكيد الطلب والدفع عند الاستلام 💚</p>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-top">
+<!-- ================= CTA BAND ================= -->
+<section class="py-16 bg-gradient-to-r from-navy to-purple relative overflow-hidden">
+  <div class="max-w-5xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
     <div>
-      <div class="footer-logo">MAY<span>S</span>OR</div>
-      <p class="footer-desc">صابون طبيعي مغربي مصنوع بالحب — من خامات أصيلة بنكهات تُسعد من تحب.</p>
+      <h3 class="font-display text-white text-2xl sm:text-3xl font-semibold">Offrez à votre enfant le bon accompagnement</h3>
+      <p class="text-white/75 text-sm mt-2">Un premier bilan pédagogique gratuit, sans engagement.</p>
     </div>
-    <div>
-      <p class="footer-col-title">روابط سريعة</p>
-      <ul class="footer-links">
-        <li><a href="#products">المنتجات</a></li>
-        <li><a href="#scents">النكهات</a></li>
-        <li><a href="#gifts">علب الهدايا</a></li>
-        <li><a href="#order">اطلب الآن</a></li>
+    <a href="#contact" class="shrink-0 inline-flex items-center gap-2 bg-gold hover:bg-gold-dark text-navy-900 font-bold px-7 py-3.5 rounded-full transition-colors">
+      Contactez-nous
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact" class="py-24 sm:py-28 bg-white">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-5 gap-14">
+
+    <div class="reveal lg:col-span-2">
+      <span class="eyebrow text-gold-dark text-xs font-extrabold uppercase">Contact</span>
+      <h2 class="gold-underline font-display text-navy text-3xl sm:text-[2.4rem] font-semibold leading-tight mt-4 pb-4">
+        Parlons du parcours de votre enfant
+      </h2>
+      <p class="text-ink/70 mt-8 text-[15.5px] leading-relaxed">Notre équipe vous répond sous 24h pour organiser un premier échange et un bilan pédagogique gratuit.</p>
+
+      <ul class="mt-9 space-y-5">
+        <li class="flex items-start gap-4">
+          <div class="w-11 h-11 rounded-full bg-mist grid place-items-center shrink-0">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 1118 0z" stroke="#1B1464" stroke-width="1.8"/><circle cx="12" cy="10" r="2.6" stroke="#1B1464" stroke-width="1.8"/></svg>
+          </div>
+          <div>
+            <p class="font-bold text-navy text-sm">Adresse</p>
+            <p class="text-ink/60 text-sm mt-0.5">Avenue Mohammed V, Kénitra, Maroc</p>
+          </div>
+        </li>
+        <li class="flex items-start gap-4">
+          <div class="w-11 h-11 rounded-full bg-mist grid place-items-center shrink-0">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v14H4z" stroke="#1B1464" stroke-width="1.8"/><path d="M4 7l8 6 8-6" stroke="#1B1464" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <p class="font-bold text-navy text-sm">Email</p>
+            <p class="text-ink/60 text-sm mt-0.5">contact@diwanealmaaref.ma</p>
+          </div>
+        </li>
+        <li class="flex items-start gap-4">
+          <div class="w-11 h-11 rounded-full bg-mist grid place-items-center shrink-0">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M22 16.9v2.5a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3-8.7A2 2 0 014.1 2h2.5a2 2 0 012 1.7c.1.9.3 1.8.6 2.7a2 2 0 01-.5 2.1L7.6 9.6a16 16 0 006 6l1.1-1.1a2 2 0 012.1-.5c.9.3 1.8.5 2.7.6a2 2 0 011.7 2.1z" stroke="#1B1464" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <p class="font-bold text-navy text-sm">Téléphone</p>
+            <p class="text-ink/60 text-sm mt-0.5">+212 5XX-XXXXXX</p>
+          </div>
+        </li>
       </ul>
+
+      <div class="flex items-center gap-3 mt-9">
+        <a href="#" aria-label="Facebook" class="w-10 h-10 rounded-full bg-navy text-white grid place-items-center hover:bg-gold hover:text-navy-900 transition-colors">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0022 12z"/></svg>
+        </a>
+        <a href="#" aria-label="Instagram" class="w-10 h-10 rounded-full bg-navy text-white grid place-items-center hover:bg-gold hover:text-navy-900 transition-colors">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+        </a>
+        <a href="#" aria-label="WhatsApp" class="w-10 h-10 rounded-full bg-navy text-white grid place-items-center hover:bg-gold hover:text-navy-900 transition-colors">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm5.7 14.3c-.2.6-1.3 1.2-1.8 1.3-.5.1-1 .2-3.4-.8-2.8-1.2-4.7-4-4.8-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 1-2.2.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .6l-.4.5c-.1.2-.3.3-.1.6.2.3.9 1.5 2 2.4 1.3 1.2 2.4 1.5 2.7 1.7.3.1.5.1.7-.1l.6-.7c.2-.3.4-.2.7-.1l1.8.9c.2.1.4.2.5.3.1.2.1.9-.1 1.4z"/></svg>
+        </a>
+      </div>
     </div>
-    <div>
-      <p class="footer-col-title">تواصل معنا</p>
-      <ul class="footer-links">
-        <li><a href="#">واتساب</a></li>
-        <li><a href="#">إنستغرام</a></li>
-        <li><a href="#">تيك توك</a></li>
-        <li><a href="#">البريد الإلكتروني</a></li>
-      </ul>
+
+    <div class="reveal lg:col-span-3 grid gap-6">
+      <form id="contactForm" class="bg-mist rounded-3xl border border-line p-7 sm:p-9 grid sm:grid-cols-2 gap-5" novalidate>
+        <div class="sm:col-span-1">
+          <label for="fullname" class="block text-xs font-bold text-navy uppercase tracking-wide mb-2">Nom complet</label>
+          <input id="fullname" name="fullname" type="text" required placeholder="Votre nom" class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm placeholder:text-ink/35 focus:border-gold outline-none">
+        </div>
+        <div class="sm:col-span-1">
+          <label for="phone" class="block text-xs font-bold text-navy uppercase tracking-wide mb-2">Téléphone</label>
+          <input id="phone" name="phone" type="tel" required placeholder="+212 6XX-XXXXXX" class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm placeholder:text-ink/35 focus:border-gold outline-none">
+        </div>
+        <div class="sm:col-span-2">
+          <label for="email" class="block text-xs font-bold text-navy uppercase tracking-wide mb-2">Email</label>
+          <input id="email" name="email" type="email" required placeholder="vous@email.com" class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm placeholder:text-ink/35 focus:border-gold outline-none">
+        </div>
+        <div class="sm:col-span-2">
+          <label for="level" class="block text-xs font-bold text-navy uppercase tracking-wide mb-2">Niveau concerné</label>
+          <select id="level" name="level" class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-gold outline-none">
+            <option>Primaire</option>
+            <option>Collège</option>
+            <option>Lycée</option>
+            <option>Préparation Examens</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <label for="message" class="block text-xs font-bold text-navy uppercase tracking-wide mb-2">Message</label>
+          <textarea id="message" name="message" rows="4" required placeholder="Parlez-nous du besoin de votre enfant..." class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm placeholder:text-ink/35 focus:border-gold outline-none resize-none"></textarea>
+        </div>
+        <div class="sm:col-span-2 flex items-center justify-between flex-wrap gap-4">
+          <p id="formStatus" class="text-sm font-semibold text-navy/0" aria-live="polite"></p>
+          <button type="submit" class="inline-flex items-center gap-2 bg-navy hover:bg-navy-700 text-white font-bold px-7 py-3.5 rounded-full transition-colors">
+            Envoyer la demande
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </form>
+
+      <div class="rounded-3xl overflow-hidden border border-line h-64">
+        <iframe
+          title="Localisation DiwanE Al Maaref — Kénitra"
+          src="https://www.google.com/maps?q=K%C3%A9nitra%2C%20Morocco&output=embed"
+          class="w-full h-full grayscale-[15%]"
+          style="border:0;"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
     </div>
   </div>
-  <div class="footer-bottom">
-    <p class="footer-copy">© 2025 MAYSOR — جميع الحقوق محفوظة</p>
-    <div class="social-links">
-      <a href="#" class="social-link">📸</a>
-      <a href="#" class="social-link">🎵</a>
-      <a href="#" class="social-link">💬</a>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-navy-900 text-white pt-20 pb-8 relative overflow-hidden">
+  <div class="sunburst opacity-[0.05]">
+    <svg viewBox="0 0 800 400" fill="none">
+      <g stroke="#F0A93C" stroke-width="1.5">
+        <line x1="400" y1="400" x2="400" y2="60"/>
+        <line x1="400" y1="400" x2="150" y2="120"/>
+        <line x1="400" y1="400" x2="650" y2="120"/>
+        <line x1="400" y1="400" x2="60" y2="260"/>
+        <line x1="400" y1="400" x2="740" y2="260"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 relative">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
+
+      <div>
+        <a href="#accueil" class="flex items-center gap-3 mb-5">
+          <img src="assets/logo.png" alt="Logo DiwanE Al Maaref" class="h-12 w-12 object-contain">
+          <span class="font-display font-semibold text-lg">DiwanE Al Maaref</span>
+        </a>
+        <p class="text-white/55 text-sm leading-relaxed">Institution de soutien scolaire dédiée à l'accompagnement pédagogique et à la réussite de chaque élève, du primaire au baccalauréat.</p>
+      </div>
+
+      <div>
+        <h4 class="font-display font-semibold text-base mb-5">Navigation</h4>
+        <ul class="space-y-3 text-sm text-white/60">
+          <li><a href="#apropos" class="hover:text-gold transition-colors">À propos</a></li>
+          <li><a href="#programmes" class="hover:text-gold transition-colors">Nos Programmes</a></li>
+          <li><a href="#calendrier" class="hover:text-gold transition-colors">Calendrier</a></li>
+          <li><a href="#temoignages" class="hover:text-gold transition-colors">Témoignages</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-display font-semibold text-base mb-5">Programmes</h4>
+        <ul class="space-y-3 text-sm text-white/60">
+          <li>Primaire</li>
+          <li>Collège</li>
+          <li>Lycée</li>
+          <li>Préparation Examens</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-display font-semibold text-base mb-5">Contact</h4>
+        <ul class="space-y-3 text-sm text-white/60">
+          <li>Avenue Mohammed V, Kénitra</li>
+          <li>contact@diwanealmaaref.ma</li>
+          <li>+212 5XX-XXXXXX</li>
+        </ul>
+        <div class="flex items-center gap-3 mt-5">
+          <a href="#" aria-label="Facebook" class="w-9 h-9 rounded-full bg-white/10 grid place-items-center hover:bg-gold hover:text-navy-900 transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0022 12z"/></svg>
+          </a>
+          <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-full bg-white/10 grid place-items-center hover:bg-gold hover:text-navy-900 transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          </a>
+          <a href="#" aria-label="WhatsApp" class="w-9 h-9 rounded-full bg-white/10 grid place-items-center hover:bg-gold hover:text-navy-900 transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm5.7 14.3c-.2.6-1.3 1.2-1.8 1.3-.5.1-1 .2-3.4-.8-2.8-1.2-4.7-4-4.8-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 1-2.2.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .6l-.4.5c-.1.2-.3.3-.1.6.2.3.9 1.5 2 2.4 1.3 1.2 2.4 1.5 2.7 1.7.3.1.5.1.7-.1l.6-.7c.2-.3.4-.2.7-.1l1.8.9c.2.1.4.2.5.3.1.2.1.9-.1 1.4z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-white/10 mt-14 pt-7 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
+      <p>© <span id="year"></span> DiwanE Al Maaref — Institution de Soutien Scolaire. Tous droits réservés.</p>
+      <p>Conçu avec rigueur, à Kénitra.</p>
     </div>
   </div>
 </footer>
 
-<!-- TOAST -->
-<div class="toast" id="toast">✅ تمت الإضافة لطلبك!</div>
-
 <script>
-  // Smooth scroll for all anchors
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      const target = document.querySelector(a.getAttribute('href'));
-      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
-    });
+  // Year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Mobile menu
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuBtn.addEventListener('click', () => {
+    const isHidden = mobileMenu.classList.contains('hidden');
+    mobileMenu.classList.toggle('hidden');
+    menuBtn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileMenu.classList.add('hidden');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }));
+
+  // Sticky header shadow
+  const header = document.getElementById('siteHeader');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('nav-shadow', window.scrollY > 12);
   });
 
-  // Scent pills
-  document.querySelectorAll('.scent-pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      document.querySelectorAll('.scent-pill').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-    });
-  });
-
-  // Add to cart toast
-  function addToCart(name) {
-    const toast = document.getElementById('toast');
-    toast.textContent = `✅ "${name}" أُضيف لطلبك!`;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2800);
-    // Also scroll to order
-    setTimeout(() => document.getElementById('order').scrollIntoView({ behavior: 'smooth' }), 500);
-  }
-
-  // Submit order
-  function submitOrder() {
-    const name = document.getElementById('fname').value.trim();
-    const phone = document.getElementById('fphone').value.trim();
-    const city = document.getElementById('fcity').value;
-    const product = document.getElementById('fproduct').value;
-    const notes = document.getElementById('fnotes').value.trim();
-
-    if (!name || !phone || !city || !product) {
-      alert('⚠️ يرجى ملء جميع الحقول المطلوبة');
-      return;
-    }
-
-    const msg = encodeURIComponent(
-      `🌹 طلب جديد — MAYSOR\n\n` +
-      `الاسم: ${name}\n` +
-      `الهاتف: ${phone}\n` +
-      `المدينة: ${city}\n` +
-      `المنتج: ${product}\n` +
-      (notes ? `ملاحظات: ${notes}` : '')
-    );
-
-    window.open(`https://wa.me/212600000000?text=${msg}`, '_blank');
-  }
-
-  // Scroll reveal
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.style.opacity = '1';
-        e.target.style.transform = 'translateY(0)';
+  // Reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => io.observe(el));
 
-  document.querySelectorAll('.product-card, .about-card, .testimonial-card').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(24px)';
-    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-    observer.observe(el);
+  // Hero carousel
+  document.addEventListener('DOMContentLoaded', () => {
+    new Splide('.splide', {
+      type: 'fade',
+      rewind: true,
+      autoplay: true,
+      interval: 5500,
+      speed: 1000,
+      arrows: true,
+      pagination: true,
+      pauseOnHover: false,
+    }).mount();
+  });
+
+  // Contact form (client-side only)
+  const form = document.getElementById('contactForm');
+  const status = document.getElementById('formStatus');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      status.textContent = "Merci de compléter tous les champs requis.";
+      status.classList.remove('text-navy/0');
+      status.classList.add('text-red-600');
+      return;
+    }
+    status.classList.remove('text-red-600');
+    status.classList.add('text-navy');
+    status.textContent = "Merci ! Votre demande a bien été envoyée, nous vous répondrons sous 24h.";
+    form.reset();
   });
 </script>
 </body>
