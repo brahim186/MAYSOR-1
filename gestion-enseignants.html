@@ -144,13 +144,57 @@
       </div>
 
       <div>
-        <label for="niveau" class="block text-navy text-xs font-extrabold tracking-wide uppercase mb-2">Niveau d'enseignement</label>
-        <select id="niveau" name="niveau" class="field w-full rounded-2xl border border-line bg-mist px-4 py-3 text-sm text-navy outline-none">
-          <option value="" disabled selected>Sélectionner</option>
-          <option value="Primaire">Primaire</option>
-          <option value="Collège">Collège</option>
-          <option value="Lycée">Lycée</option>
-        </select>
+        <label for="niveauBtn" class="block text-navy text-xs font-extrabold tracking-wide uppercase mb-2">Niveau d'enseignement</label>
+        <div class="relative" id="niveauWrap">
+          <button type="button" id="niveauBtn" class="field w-full rounded-2xl border border-line bg-mist px-4 py-3 text-sm text-left flex items-center justify-between gap-2">
+            <span id="niveauBtnLabel" class="text-ink/30">Sélectionner (3 max)</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="shrink-0 text-navy/50"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div id="niveauPanel" class="hidden absolute z-20 mt-2 w-full max-h-64 overflow-y-auto bg-white border border-line rounded-2xl shadow-lg p-2">
+            <p class="text-[10px] font-extrabold uppercase tracking-wide text-ink/40 px-3 pt-2 pb-1">Primaire</p>
+            <label class="niveauOptionLabel flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-mist cursor-pointer text-sm">
+              <input type="checkbox" class="niveauOption accent-navy" value="1ère année primaire"><span>1ère année primaire</span>
+            </label>
+            <label class="niveauOptionLabel flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-mist cursor-pointer text-sm">
+              <input type="checkbox" class="niveauOption accent-navy" value="2ème année primaire"><span>2ème année primaire</span>
+            </label>
+            <label class="niveauOptionLabel flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-mist cursor-pointer text-sm">
+              <input type="checkbox" class="niveauOption accent-navy" value="3ème année primaire"><span>3ème année primaire</span>
+            </label>
+            <label class="niveauOptionLabel flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-mist cursor-pointer text-sm">
+              <input type="checkbox" class="niveauOption accent-navy" value="4ème année primaire"><span>4ème année primaire</span>
+            </label>
+            <label class="niveauOptionLabel flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-mist cursor-pointer text-sm">
+              <input type="checkbox" class="niveauOption accent-navy" value="5ème année primaire"><span>5ème année primaire</span>
+            </label>
+            <label class="niveauOptionLabel flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-mist cursor-pointer text-sm">
+              <input type="checkbox" class="niveauOption accent-navy" value="6ème année primaire"><span>6ème année primaire</span>
+            </label>
+
+            <p class="text-[10px] font-extrabold uppercase tracking-wide text-ink/40 px-3 pt-3 pb-1">Collège</p>
+            <label class="niveauOptionLabel flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-mist cursor-pointer text-sm">
+              <input type="checkbox" class="niveauOption accent-navy" value="1ère année collège"><span>1ère année collège</span>
+            </label>
+            <label class="niveauOptionLabel flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-mist cursor-pointer text-sm">
+              <input type="checkbox" class="niveauOption accent-navy" value="2ème année collège"><span>2ème année collège</span>
+            </label>
+            <label class="niveauOptionLabel flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-mist cursor-pointer text-sm">
+              <input type="checkbox" class="niveauOption accent-navy" value="3ème année collège"><span>3ème année collège</span>
+            </label>
+
+            <p class="text-[10px] font-extrabold uppercase tracking-wide text-ink/40 px-3 pt-3 pb-1">Lycée</p>
+            <label class="niveauOptionLabel flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-mist cursor-pointer text-sm">
+              <input type="checkbox" class="niveauOption accent-navy" value="Tronc commun"><span>Tronc commun</span>
+            </label>
+            <label class="niveauOptionLabel flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-mist cursor-pointer text-sm">
+              <input type="checkbox" class="niveauOption accent-navy" value="1ère année bac"><span>1ère année bac</span>
+            </label>
+            <label class="niveauOptionLabel flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-mist cursor-pointer text-sm">
+              <input type="checkbox" class="niveauOption accent-navy" value="2ème année bac"><span>2ème année bac</span>
+            </label>
+          </div>
+          <p id="niveauLimitMsg" class="hidden text-[11px] font-bold text-gold-dark mt-1.5 px-1">Maximum 3 niveaux sélectionnables.</p>
+        </div>
       </div>
 
       <div>
@@ -224,6 +268,62 @@
 <script>
   const STORAGE_KEY = 'diwanEnseignants';
 
+  // --- Sélecteur multiple des niveaux (max 3) ---
+  const niveauBtn      = document.getElementById('niveauBtn');
+  const niveauBtnLabel = document.getElementById('niveauBtnLabel');
+  const niveauPanel    = document.getElementById('niveauPanel');
+  const niveauLimitMsg = document.getElementById('niveauLimitMsg');
+  const niveauOptions  = Array.from(document.querySelectorAll('.niveauOption'));
+  const MAX_NIVEAUX = 3;
+
+  function getSelectedNiveaux() {
+    return niveauOptions.filter((cb) => cb.checked).map((cb) => cb.value);
+  }
+
+  function updateNiveauBtnLabel() {
+    const selected = getSelectedNiveaux();
+    if (selected.length === 0) {
+      niveauBtnLabel.textContent = 'Sélectionner (3 max)';
+      niveauBtnLabel.classList.add('text-ink/30');
+    } else {
+      niveauBtnLabel.textContent = selected.join(', ');
+      niveauBtnLabel.classList.remove('text-ink/30');
+    }
+  }
+
+  function refreshNiveauLocks() {
+    const selected = getSelectedNiveaux();
+    const limitReached = selected.length >= MAX_NIVEAUX;
+    niveauOptions.forEach((cb) => {
+      cb.disabled = limitReached && !cb.checked;
+    });
+    niveauLimitMsg.classList.toggle('hidden', !limitReached);
+  }
+
+  niveauOptions.forEach((cb) => {
+    cb.addEventListener('change', () => {
+      updateNiveauBtnLabel();
+      refreshNiveauLocks();
+    });
+  });
+
+  niveauBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    niveauPanel.classList.toggle('hidden');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('niveauWrap').contains(e.target)) {
+      niveauPanel.classList.add('hidden');
+    }
+  });
+
+  function resetNiveauSelector() {
+    niveauOptions.forEach((cb) => { cb.checked = false; cb.disabled = false; });
+    updateNiveauBtnLabel();
+    niveauLimitMsg.classList.add('hidden');
+  }
+
   const form           = document.getElementById('teacherForm');
   const formError      = document.getElementById('formError');
   const tableBody      = document.getElementById('teacherTableBody');
@@ -270,8 +370,8 @@
   }
 
   function levelBadgeClass(niveau) {
-    if (niveau === 'Primaire') return 'badge-lvl-primaire';
-    if (niveau === 'Collège') return 'badge-lvl-college';
+    if (niveau.includes('primaire')) return 'badge-lvl-primaire';
+    if (niveau.includes('collège')) return 'badge-lvl-college';
     return 'badge-lvl-lycee';
   }
 
@@ -304,7 +404,7 @@
         <td class="px-4 py-4 whitespace-nowrap">${t.genre}</td>
         <td class="px-4 py-4 text-ink/60 max-w-[180px] truncate" title="${t.adresse}">${t.adresse}</td>
         <td class="px-4 py-4 whitespace-nowrap text-ink/60">${t.telephone}</td>
-        <td class="px-4 py-4 whitespace-nowrap"><span class="inline-block text-[11px] font-extrabold rounded-full px-3 py-1 ${levelBadgeClass(t.niveau)}">${t.niveau}</span></td>
+        <td class="px-4 py-4 whitespace-nowrap"><div class="flex flex-wrap gap-1 max-w-[220px]">${t.niveaux.map((n) => `<span class="inline-block text-[10px] font-extrabold rounded-full px-2.5 py-1 ${levelBadgeClass(n)}">${n}</span>`).join('')}</div></td>
         <td class="px-4 py-4 whitespace-nowrap"><span class="inline-block text-[11px] font-extrabold rounded-full px-3 py-1 ${groupBadgeClass(t.groupe)}">${t.groupe}</span></td>
         <td class="px-4 py-4 whitespace-nowrap font-bold text-emerald-600">${formatSalaire(t.salaire)}</td>
         <td class="px-4 py-4 whitespace-nowrap font-mono text-xs font-bold text-purple">${t.username}</td>
@@ -350,11 +450,11 @@
     const genre     = document.getElementById('genre').value;
     const adresse   = document.getElementById('adresse').value.trim();
     const telephone = document.getElementById('telephone').value.trim();
-    const niveau    = document.getElementById('niveau').value;
+    const niveaux   = getSelectedNiveaux();
     const groupe    = document.getElementById('groupe').value;
     const salaire   = document.getElementById('salaire').value;
 
-    if (!nom || !prenom || !genre || !adresse || !telephone || !niveau || !groupe || salaire === '') {
+    if (!nom || !prenom || !genre || !adresse || !telephone || niveaux.length === 0 || !groupe || salaire === '') {
       formError.classList.remove('hidden');
       return;
     }
@@ -367,7 +467,7 @@
 
     teachers.push({
       id: Date.now(),
-      nom, prenom, genre, adresse, telephone, niveau, groupe, salaire: Number(salaire),
+      nom, prenom, genre, adresse, telephone, niveaux, groupe, salaire: Number(salaire),
       username, password
     });
 
@@ -375,6 +475,7 @@
     render();
     showToast(`Enseignant ajouté — identifiant : ${username}`);
     form.reset();
+    resetNiveauSelector();
   });
 
   document.getElementById('logoutBtn').addEventListener('click', () => {
