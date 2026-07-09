@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Fraunces:wght@500;600&family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <script src="https://cdn.tailwindcss.com"></script>
+<!-- مكتبة توليد الـ PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
@@ -232,20 +233,20 @@
         </div>
         
         <div class="flex items-center gap-3">
-          <button type="button" data-action="accepte" class="main-action-btn inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
+          <button type="button" data-action="accepte" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             ACCEPTÉ
           </button>
-          <button type="button" data-action="refuse" class="main-action-btn inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
+          <button type="button" data-action="refuse" class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             REFUSÉ
           </button>
 
-          <button type="button" data-action="reset" class="modified-btn hidden inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
+          <button type="button" data-action="reset" class="hidden inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l6.17-5.69"/></svg>
             RÉINITIALISER
           </button>
-          <button type="button" data-action="delete" class="modified-btn hidden inline-flex items-center gap-2 bg-neutral-700 hover:bg-neutral-800 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
+          <button type="button" data-action="delete" class="hidden inline-flex items-center gap-2 bg-neutral-700 hover:bg-neutral-800 text-white font-extrabold text-xs px-5 py-2.5 rounded-full transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             SUPPRIMER
           </button>
@@ -307,7 +308,6 @@ async function fetchRecords(token, silent) {
     loginError.classList.add('hidden');
   } else {
     loginGate.classList.add('hidden');
-    dashboard.remove.className = '';
     dashboard.classList.remove('hidden');
     loadingState.classList.remove('hidden');
     tableWrap.classList.add('hidden');
@@ -399,28 +399,23 @@ function renderRecords(records) {
     wireDoc(node, 'birthCert', r.ActeNaissanceURL, false);
     wireDoc(node, 'idCards', r.CINParentsURL, false);
 
-    // تطبيق واجهة الحالة والأزرار المناسبة ديناميكياً
     applyStatusInterface(rowRoot, r.Statut || '');
 
-    // حدث القبول
     rowRoot.querySelector('[data-action="accepte"]').addEventListener('click', (e) => {
       e.stopPropagation();
       updateStatusOnServer(r.ID, 'Accepté', rowRoot);
     });
     
-    // حدث الرفض
     rowRoot.querySelector('[data-action="refuse"]').addEventListener('click', (e) => {
       e.stopPropagation();
       updateStatusOnServer(r.ID, 'Refusé', rowRoot);
     });
 
-    // حدث إعادة الضبط
     rowRoot.querySelector('[data-action="reset"]').addEventListener('click', (e) => {
       e.stopPropagation();
       updateStatusOnServer(r.ID, 'En attente', rowRoot);
     });
 
-    // حدث الحذف
     rowRoot.querySelector('[data-action="delete"]').addEventListener('click', (e) => {
       e.stopPropagation();
       if(confirm("Êtes-vous sûr de vouloir supprimer définitivement cette inscription ?")) {
@@ -428,13 +423,11 @@ function renderRecords(records) {
       }
     });
 
-    // حدث تحميل الـ PDF
     rowRoot.querySelector('[data-action="downloadPdf"]').addEventListener('click', (e) => {
       e.stopPropagation();
       buildAndDownloadPdf(r);
     });
 
-    // فتح وإغلاق لوحة التفاصيل المنسدلة
     toggleBtn.addEventListener('click', () => {
       const isOpen = expandPanel.classList.contains('open');
       expandPanel.classList.toggle('open', !isOpen);
@@ -455,7 +448,6 @@ function applyStatusInterface(rowElement, status) {
 
   badge.className = 'text-xs font-extrabold px-3 py-1.5 rounded-full';
   
-  // إخفاء كافة الأزرار أولاً لضبط المشهد
   acceptBtn.classList.add('hidden');
   refuseBtn.classList.add('hidden');
   resetBtn.classList.add('hidden');
@@ -465,24 +457,18 @@ function applyStatusInterface(rowElement, status) {
   if (status === 'Accepté') {
     badge.textContent = 'Accepté';
     badge.classList.add('bg-emerald-100', 'text-emerald-700');
-    
-    // إظهار أزرار التحديث والحذف والـ PDF
     resetBtn.classList.remove('hidden');
     deleteBtn.classList.remove('hidden');
     pdfBtn.classList.remove('hidden');
   } else if (status === 'Refusé') {
     badge.textContent = 'Refusé';
     badge.classList.add('bg-red-100', 'text-red-700');
-    
-    // إظهار أزرار التحديث والحذف والـ PDF
     resetBtn.classList.remove('hidden');
     deleteBtn.classList.remove('hidden');
     pdfBtn.classList.remove('hidden');
   } else {
     badge.textContent = 'En attente';
     badge.classList.add('bg-mist', 'text-ink/50');
-    
-    // إظهار الأزرار الأساسية فقط (القبول والرفض)
     acceptBtn.classList.remove('hidden');
     refuseBtn.classList.remove('hidden');
   }
@@ -510,7 +496,7 @@ async function updateStatusOnServer(id, status, rowElement) {
       alert("Erreur: " + (data.message || "Impossible de modifier l'état."));
     }
   } catch (err) {
-    alert("Erreur réseau ou problème de communication.");
+    alert("Erreur réseau.");
   } finally {
     btns.forEach(b => b.disabled = false);
   }
@@ -522,7 +508,8 @@ async function deleteRecordFromServer(id, rowElement) {
     const url = API_URL + '?token=' + encodeURIComponent(token) +
       '&action=deleteRecord&id=' + encodeURIComponent(id);
     
-    // يمكنك ربط أكشن الإزالة بالسيرفر، هنا سنقوم بإزالتها مباشرة من الواجهة للتسهيل
+    await fetch(url);
+    
     rowElement.style.transition = "all 0.4s ease";
     rowElement.style.opacity = "0";
     setTimeout(() => {
@@ -566,15 +553,11 @@ function buildAndDownloadPdf(r) {
   const badgeColor = r.Statut === 'Accepté' ? '#10B981' : '#EF4444';
 
   container.innerHTML = `
-    <div style="display:flex; justify-content:space-between; align-items:center; border-b:2px solid #1B1464; padding-bottom:20px; margin-bottom:30px;">
-      <div>
-        <h1 style="color:#1B1464; font-size:24px; margin:0; font-weight:bold;">Institution Diwan Al Maaref</h1>
-        <p style="color:#F0A93C; font-size:12px; margin:5px 0 0 0; font-weight:bold; text-transform:uppercase;">Fiche d'Inscription Administrative</p>
-      </div>
-      <div style="text-align:right;">
-        <span style="font-size:12px; color:#666;">Matricule:</span>
-        <div style="font-size:18px; font-weight:bold; color:#1B1464;">${r.ID ?? '—'}</div>
-      </div>
+    <!-- الجزء العلوي يحتوي على اللوغو فوق اسم المؤسسة تماماً ومحاذى للمنتصف -->
+    <div style="text-align: center; border-b:2px solid #1B1464; padding-bottom:20px; margin-bottom:30px;">
+      <img src="logo.png" alt="Logo" style="height: 70px; width: 70px; object-contain: true; margin-bottom: 12px;">
+      <h1 style="color:#1B1464; font-size:24px; margin:0; font-weight:bold;">Institution Diwan Al Maaref</h1>
+      <p style="color:#F0A93C; font-size:12px; margin:5px 0 0 0; font-weight:bold; text-transform:uppercase;">Fiche d'Inscription Administrative</p>
     </div>
 
     <div style="display:flex; justify-content:space-between; margin-bottom:30px; background:#F6F4FC; padding:15px; border-radius:12px;">
@@ -583,8 +566,9 @@ function buildAndDownloadPdf(r) {
         <div style="font-size:16px; font-weight:bold; color:${badgeColor}; margin-top:4px;">${r.Statut === 'Accepté' ? 'ACCEPTÉ' : 'REFUSÉ'}</div>
       </div>
       <div style="text-align:right;">
-        <span style="font-size:11px; text-transform:uppercase; color:#666; font-weight:bold;">Date de Soumission</span>
-        <div style="font-size:13px; font-weight:bold; color:#221D3D; margin-top:4px;">${formatTimestamp(r.Horodatage)}</div>
+        <span style="font-size:11px; text-transform:uppercase; color:#666; font-weight:bold;">Matricule & Date</span>
+        <div style="font-size:13px; font-weight:bold; color:#1B1464; margin-top:4px;">ID: ${r.ID ?? '—'}</div>
+        <div style="font-size:11px; color:#666; margin-top:2px;">${formatTimestamp(r.Horodatage)}</div>
       </div>
     </div>
 
@@ -616,7 +600,7 @@ function buildAndDownloadPdf(r) {
     </div>
 
     <div style="margin-top:60px; border-top:1px dashed #E7E2F3; padding-top:20px; text-align:center; font-size:11px; color:#999;">
-      Document officielle généré par le Tableau de Bord Administratif de Diwan Al Maaref.
+      Document officiel généré par le Tableau de Bord Administratif de Diwan Al Maaref.
     </div>
   `;
 
