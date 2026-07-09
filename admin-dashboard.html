@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم الإدارة | ديوان المعارف</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="assets/logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Fraunces:wght@500;600&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          navy:  { DEFAULT:'#1B1464', 700:'#170F52', 900:'#100B3B' },
+          purple:{ DEFAULT:'#5B3AA6' },
+          gold:  { DEFAULT:'#F0A93C', light:'#FBC873', dark:'#D98F1F' },
+          ink:   '#221D3D',
+          mist:  '#F6F4FC',
+          line:  '#E7E2F3',
+        },
+        fontFamily: { arabic: ['Tajawal','sans-serif'], display: ['Fraunces','serif'] }
+      }
+    }
+  }
+</script>
+
+<style>
+  body { font-family:'Tajawal', sans-serif; color:#221D3D; background:#F6F4FC; }
+  .font-display { font-family:'Fraunces', serif; }
+  .num { font-family:'Manrope', sans-serif; }
+  ::selection { background:#F0A93C; color:#1B1464; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 2px solid #F0A93C; outline-offset: 2px; border-radius: 6px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration:.01ms !important; transition-duration:.01ms !important; }
+  }
+
+  .spinner {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 3px solid rgba(27,20,100,.15); border-top-color:#1B1464;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .row-expand { max-height: 0; overflow: hidden; transition: max-height .45s cubic-bezier(.2,.8,.25,1); }
+  .row-expand.open { max-height: 900px; }
+
+  .chevron { transition: transform .35s ease; }
+  .chevron.open { transform: rotate(180deg); }
+
+  .row-card { transition: background .2s ease, box-shadow .2s ease; }
+  .row-card:hover { background: #FBF9FE; }
+
+  .doc-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .doc-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px -14px rgba(27,20,100,.3); }
+</style>
+</head>
+
+<body class="antialiased min-h-screen">
+
+<!-- ================= LOGIN GATE ================= -->
+<div id="loginGate" class="min-h-screen flex items-center justify-center px-5">
+  <div class="w-full max-w-sm bg-white border border-line rounded-3xl shadow-xl p-8 sm:p-10">
+    <div class="flex flex-col items-center text-center mb-8">
+      <img src="assets/logo.png" alt="شعار ديوان المعارف" class="h-16 w-16 object-contain mb-4">
+      <h1 class="font-display font-semibold text-navy text-xl">لوحة تحكم الإدارة</h1>
+      <p class="text-ink/50 text-xs mt-2">الدخول مخصص لفريق إدارة ديوان المعارف فقط</p>
+    </div>
+
+    <form id="loginForm" class="space-y-4">
+      <div>
+        <label for="tokenInput" class="block text-xs font-bold text-navy uppercase tracking-wide mb-2">رمز الدخول السري</label>
+        <input id="tokenInput" type="password" required placeholder="••••••••••••" class="w-full rounded-xl border border-line bg-mist/60 px-4 py-3 text-sm focus:border-gold outline-none" autocomplete="off">
+      </div>
+      <p id="loginError" class="text-xs font-semibold text-red-500 hidden"></p>
+      <button type="submit" class="w-full inline-flex items-center justify-center gap-2 bg-navy hover:bg-navy-700 text-white font-extrabold px-6 py-3.5 rounded-full transition-colors">
+        <span id="loginSpinner" class="spinner hidden"></span>
+        <span id="loginBtnText">دخول</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+<div id="dashboard" class="hidden">
+
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <img src="assets/logo.png" alt="شعار ديوان المعارف" class="h-11 w-11 object-contain">
+        <div class="hidden sm:flex flex-col leading-tight">
+          <span class="font-display font-semibold text-navy text-base">لوحة تحكم التسجيلات</span>
+          <span class="text-[11px] text-gold-dark font-bold">ديوان المعارف — الإدارة</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="refreshBtn" class="w-10 h-10 grid place-items-center rounded-full border border-line text-navy hover:border-gold hover:text-gold-dark transition-colors" aria-label="تحديث البيانات">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 11-3-6.7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button id="logoutBtn" class="text-sm font-bold text-navy/60 hover:text-red-500 transition-colors">تسجيل الخروج</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-5 sm:px-8 py-10">
+
+    <!-- Stats + search -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 mb-8">
+      <div>
+        <h2 class="font-display font-semibold text-navy text-2xl">طلبات التسجيل</h2>
+        <p class="text-ink/50 text-sm mt-1"><span id="totalCount" class="font-bold text-navy num">0</span> طلب مسجل بالمجموع</p>
+      </div>
+      <div class="relative w-full sm:w-72">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="absolute right-4 top-1/2 -translate-y-1/2 text-ink/30"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="searchInput" type="text" placeholder="البحث بالاسم..." class="w-full rounded-full border border-line bg-white pr-11 pl-4 py-2.5 text-sm focus:border-gold outline-none">
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div id="loadingState" class="flex flex-col items-center justify-center py-24 gap-4">
+      <span class="spinner" style="width:32px;height:32px;border-width:4px;"></span>
+      <p class="text-ink/50 text-sm">جاري تحميل البيانات...</p>
+    </div>
+
+    <!-- Empty state -->
+    <div id="emptyState" class="hidden flex-col items-center justify-center py-24 gap-3 text-center">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M9 12h6M9 16h6M9 8h6" stroke="#5B3AA6" stroke-width="1.6" stroke-linecap="round"/><path d="M4 19V6a2 2 0 012-2h9l5 5v10a2 2 0 01-2 2H6a2 2 0 01-2-2z" stroke="#5B3AA6" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <p class="text-navy font-bold">لا توجد طلبات تسجيل بعد</p>
+      <p class="text-ink/45 text-sm">ستظهر هنا الطلبات فور إرسالها من طرف الأولياء.</p>
+    </div>
+
+    <!-- Table -->
+    <div id="tableWrap" class="hidden bg-white border border-line rounded-3xl overflow-hidden shadow-sm">
+      <!-- Head row -->
+      <div class="grid grid-cols-[70px_1fr_1fr_140px_28px] sm:grid-cols-[80px_1fr_1fr_180px_28px] gap-2 px-5 sm:px-7 py-4 bg-navy text-white text-[11px] sm:text-xs font-extrabold uppercase tracking-wide">
+        <span>الرقم</span>
+        <span>الاسم الأول</span>
+        <span>الاسم العائلي</span>
+        <span>تاريخ التسجيل</span>
+        <span></span>
+      </div>
+      <div id="rowsContainer" class="divide-y divide-line"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Row template (cloned via JS) -->
+<template id="rowTemplate">
+  <div class="record-row">
+    <button type="button" class="row-card w-full text-right grid grid-cols-[70px_1fr_1fr_140px_28px] sm:grid-cols-[80px_1fr_1fr_180px_28px] gap-2 items-center px-5 sm:px-7 py-4">
+      <span class="num font-bold text-navy" data-field="id"></span>
+      <span class="font-semibold text-ink truncate" data-field="firstName"></span>
+      <span class="font-semibold text-ink truncate" data-field="lastName"></span>
+      <span class="text-ink/60 text-xs sm:text-sm num" data-field="timestamp"></span>
+      <svg class="chevron shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#5B3AA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+
+    <div class="row-expand bg-mist/60">
+      <div class="px-5 sm:px-7 pb-7 pt-2 grid lg:grid-cols-3 gap-6">
+
+        <div class="lg:col-span-1 space-y-4">
+          <p class="text-[11px] font-extrabold uppercase tracking-wide text-gold-dark">معلومات التلميذ (ة)</p>
+          <div class="bg-white rounded-2xl border border-line p-4 space-y-3 text-sm">
+            <div class="flex justify-between gap-3"><span class="text-ink/50">مكان الازدياد</span><span class="font-bold text-navy" data-field="pob"></span></div>
+            <div class="flex justify-between gap-3"><span class="text-ink/50">تاريخ الازدياد</span><span class="font-bold text-navy num" data-field="dob"></span></div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-1 space-y-4">
+          <p class="text-[11px] font-extrabold uppercase tracking-wide text-gold-dark">الأولياء والاتصال</p>
+          <div class="bg-white rounded-2xl border border-line p-4 space-y-3 text-sm">
+            <div class="flex justify-between gap-3"><span class="text-ink/50">اسم الأب</span><span class="font-bold text-navy" data-field="fatherName"></span></div>
+            <div class="flex justify-between gap-3"><span class="text-ink/50">اسم الأم</span><span class="font-bold text-navy" data-field="motherName"></span></div>
+            <div class="flex justify-between gap-3"><span class="text-ink/50">CIN الأب</span><span class="font-bold text-navy num" data-field="fatherCIN"></span></div>
+            <div class="flex justify-between gap-3"><span class="text-ink/50">CIN الأم</span><span class="font-bold text-navy num" data-field="motherCIN"></span></div>
+            <div class="flex justify-between gap-3"><span class="text-ink/50">هاتف الأب</span><span class="font-bold text-navy num" data-field="fatherPhone"></span></div>
+            <div class="flex justify-between gap-3"><span class="text-ink/50">هاتف الأم</span><span class="font-bold text-navy num" data-field="motherPhone"></span></div>
+            <div class="flex justify-between gap-3"><span class="text-ink/50">رقم الطوارئ</span><span class="font-bold text-navy num" data-field="emergencyPhone"></span></div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-1 space-y-4">
+          <p class="text-[11px] font-extrabold uppercase tracking-wide text-gold-dark">الوثائق المرفقة</p>
+          <div class="grid grid-cols-2 gap-3" data-field="docsWrap">
+
+            <a data-doc="photo" target="_blank" rel="noopener" class="doc-card bg-white rounded-2xl border border-line overflow-hidden flex flex-col">
+              <div class="h-20 bg-mist grid place-items-center overflow-hidden">
+                <img data-doc-img="photo" class="w-full h-full object-cover hidden" alt="صورة التلميذ">
+                <svg data-doc-icon="photo" width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#5B3AA6" stroke-width="1.6"/><circle cx="9" cy="10" r="1.4" fill="#5B3AA6"/></svg>
+              </div>
+              <span class="text-[11px] font-bold text-navy text-center py-2">صورة التلميذ</span>
+            </a>
+
+            <a data-doc="birthCert" target="_blank" rel="noopener" class="doc-card bg-white rounded-2xl border border-line overflow-hidden flex flex-col">
+              <div class="h-20 bg-mist grid place-items-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 19V6a2 2 0 012-2h9l5 5v10a2 2 0 01-2 2H6a2 2 0 01-2-2z" stroke="#5B3AA6" stroke-width="1.6" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="text-[11px] font-bold text-navy text-center py-2">عقد الازدياد</span>
+            </a>
+
+            <a data-doc="idCards" target="_blank" rel="noopener" class="doc-card bg-white rounded-2xl border border-line overflow-hidden flex flex-col col-span-2">
+              <div class="h-20 bg-mist grid place-items-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="#5B3AA6" stroke-width="1.6"/><circle cx="8" cy="12" r="1.6" stroke="#5B3AA6" stroke-width="1.4"/><path d="M13 10h5M13 14h5" stroke="#5B3AA6" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </div>
+              <span class="text-[11px] font-bold text-navy text-center py-2">بطاقتا التعريف الوطنية</span>
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+// ================== CONFIGURATION ==================
+// Remplacez cette URL par celle de votre déploiement Google Apps Script
+// (voir backend/SETUP_INSTRUCTIONS.md)
+const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+const TOKEN_KEY = 'diwane_admin_token';
+let allRecords = [];
+
+// ================== LOGIN ==================
+const loginGate = document.getElementById('loginGate');
+const dashboard = document.getElementById('dashboard');
+const loginForm = document.getElementById('loginForm');
+const loginError = document.getElementById('loginError');
+const loginSpinner = document.getElementById('loginSpinner');
+const loginBtnText = document.getElementById('loginBtnText');
+
+function driveIdFromUrl(url) {
+  if (!url) return null;
+  const match = url.match(/\/d\/([^/]+)/);
+  return match ? match[1] : null;
+}
+
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (API_URL.indexOf('PASTE_YOUR') === 0) {
+    loginError.textContent = 'الرجاء ضبط رابط الخادم (API_URL) في الكود أولاً.';
+    loginError.classList.remove('hidden');
+    return;
+  }
+  const token = document.getElementById('tokenInput').value.trim();
+  fetchRecords(token, false);
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  sessionStorage.removeItem(TOKEN_KEY);
+  location.reload();
+});
+
+document.getElementById('refreshBtn').addEventListener('click', () => {
+  const token = sessionStorage.getItem(TOKEN_KEY);
+  if (token) fetchRecords(token, true);
+});
+
+// Auto-login if a token is already stored for this session
+(function initSession() {
+  const stored = sessionStorage.getItem(TOKEN_KEY);
+  if (stored && API_URL.indexOf('PASTE_YOUR') !== 0) {
+    fetchRecords(stored, true);
+  }
+})();
+
+async function fetchRecords(token, silent) {
+  const loadingState = document.getElementById('loadingState');
+  const tableWrap = document.getElementById('tableWrap');
+  const emptyState = document.getElementById('emptyState');
+
+  if (!silent) {
+    loginSpinner.classList.remove('hidden');
+    loginBtnText.textContent = 'جاري التحقق...';
+    loginError.classList.add('hidden');
+  } else {
+    loginGate.classList.add('hidden');
+    dashboard.classList.remove('hidden');
+    loadingState.classList.remove('hidden');
+    tableWrap.classList.add('hidden');
+    emptyState.classList.add('hidden');
+  }
+
+  try {
+    const res = await fetch(API_URL + '?token=' + encodeURIComponent(token));
+    const data = await res.json();
+
+    if (data.status === 'success') {
+      sessionStorage.setItem(TOKEN_KEY, token);
+      allRecords = data.records || [];
+      loginGate.classList.add('hidden');
+      dashboard.classList.remove('hidden');
+      renderRecords(allRecords);
+    } else {
+      sessionStorage.removeItem(TOKEN_KEY);
+      loginGate.classList.remove('hidden');
+      dashboard.classList.add('hidden');
+      loginError.textContent = data.message || 'رمز الدخول غير صحيح.';
+      loginError.classList.remove('hidden');
+    }
+  } catch (err) {
+    if (!silent) {
+      loginError.textContent = 'تعذر الاتصال بالخادم. تحقق من الرابط API_URL.';
+      loginError.classList.remove('hidden');
+    }
+  } finally {
+    loadingState.classList.add('hidden');
+    loginSpinner.classList.add('hidden');
+    loginBtnText.textContent = 'دخول';
+  }
+}
+
+// ================== RENDER ==================
+function formatTimestamp(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return ts;
+  return d.toLocaleDateString('fr-FR') + ' — ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function renderRecords(records) {
+  const container = document.getElementById('rowsContainer');
+  const tableWrap = document.getElementById('tableWrap');
+  const emptyState = document.getElementById('emptyState');
+  const totalCount = document.getElementById('totalCount');
+
+  container.innerHTML = '';
+  totalCount.textContent = records.length;
+
+  if (records.length === 0) {
+    tableWrap.classList.add('hidden');
+    emptyState.classList.remove('hidden');
+    emptyState.classList.add('flex');
+    return;
+  }
+  emptyState.classList.add('hidden');
+  tableWrap.classList.remove('hidden');
+
+  const template = document.getElementById('rowTemplate');
+
+  records.forEach((r) => {
+    const node = template.content.cloneNode(true);
+    const toggleBtn = node.querySelector('button.row-card');
+    const expandPanel = node.querySelector('.row-expand');
+    const chevron = node.querySelector('.chevron');
+
+    node.querySelector('[data-field="id"]').textContent = r.ID ?? '—';
+    node.querySelector('[data-field="firstName"]').textContent = r.Prenom || '—';
+    node.querySelector('[data-field="lastName"]').textContent = r.Nom || '—';
+    node.querySelector('[data-field="timestamp"]').textContent = formatTimestamp(r.Horodatage);
+
+    node.querySelector('[data-field="pob"]').textContent = r.LieuNaissance || '—';
+    node.querySelector('[data-field="dob"]').textContent = r.DateNaissance || '—';
+    node.querySelector('[data-field="fatherName"]').textContent = r.NomPere || '—';
+    node.querySelector('[data-field="motherName"]').textContent = r.NomMere || '—';
+    node.querySelector('[data-field="fatherCIN"]').textContent = r.CINPere || '—';
+    node.querySelector('[data-field="motherCIN"]').textContent = r.CINMere || '—';
+    node.querySelector('[data-field="fatherPhone"]').textContent = r.TelPere || '—';
+    node.querySelector('[data-field="motherPhone"]').textContent = r.TelMere || '—';
+    node.querySelector('[data-field="emergencyPhone"]').textContent = r.TelUrgence || '—';
+
+    wireDoc(node, 'photo', r.PhotoURL, true);
+    wireDoc(node, 'birthCert', r.ActeNaissanceURL, false);
+    wireDoc(node, 'idCards', r.CINParentsURL, false);
+
+    toggleBtn.addEventListener('click', () => {
+      const isOpen = expandPanel.classList.contains('open');
+      expandPanel.classList.toggle('open', !isOpen);
+      chevron.classList.toggle('open', !isOpen);
+    });
+
+    container.appendChild(node);
+  });
+}
+
+function wireDoc(node, key, url, isImage) {
+  const link = node.querySelector('[data-doc="' + key + '"]');
+  if (!url) {
+    link.classList.add('opacity-40', 'pointer-events-none');
+    return;
+  }
+  link.href = url;
+
+  if (isImage) {
+    const fileId = driveIdFromUrl(url);
+    const img = node.querySelector('[data-doc-img="' + key + '"]');
+    const icon = node.querySelector('[data-doc-icon="' + key + '"]');
+    if (fileId && img) {
+      img.src = 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w300';
+      img.classList.remove('hidden');
+      if (icon) icon.classList.add('hidden');
+    }
+  }
+}
+
+// ================== SEARCH ==================
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  if (!q) { renderRecords(allRecords); return; }
+  const filtered = allRecords.filter((r) =>
+    (r.Prenom || '').toLowerCase().includes(q) ||
+    (r.Nom || '').toLowerCase().includes(q)
+  );
+  renderRecords(filtered);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>استمارة التسجيل الأولي | ديوان المعارف — DiwanE Al Maaref</title>
+<meta name="description" content="استمارة التسجيل الأولي للتلاميذ بمؤسسة ديوان المعارف للدعم المدرسي">
+<link rel="icon" type="image/png" href="assets/logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Fraunces:wght@500;600&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          navy:  { DEFAULT:'#1B1464', 700:'#170F52', 900:'#100B3B' },
+          purple:{ DEFAULT:'#5B3AA6' },
+          gold:  { DEFAULT:'#F0A93C', light:'#FBC873', dark:'#D98F1F' },
+          ink:   '#221D3D',
+          mist:  '#F6F4FC',
+          line:  '#E7E2F3',
+        },
+        fontFamily: {
+          arabic: ['Tajawal','sans-serif'],
+          display: ['Fraunces','serif'],
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Tajawal', sans-serif; color:#221D3D; background:#FFFFFF; }
+  .font-display { font-family: 'Fraunces', serif; }
+  .num { font-family: 'Manrope', sans-serif; }
+
+  ::selection { background:#F0A93C; color:#1B1464; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, label:focus-within {
+    outline: 2px solid #F0A93C; outline-offset: 2px; border-radius: 6px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration:.01ms !important; transition-duration:.01ms !important; }
+  }
+
+  .field-label { font-weight: 700; color:#1B1464; font-size: .85rem; }
+  .field-hint  { color:#221D3D66; font-size: .72rem; }
+
+  .step-card { transition: box-shadow .3s ease, transform .3s ease; }
+
+  .file-drop {
+    border: 2px dashed #E7E2F3; transition: border-color .25s ease, background .25s ease;
+  }
+  .file-drop.has-file { border-color:#F0A93C; background:#FFF8EC; }
+  .file-drop:hover { border-color:#5B3AA6; }
+
+  .spinner {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 3px solid rgba(255,255,255,.35); border-top-color:#fff;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .progress-dot { transition: background .3s ease, transform .3s ease; }
+
+  .toast {
+    transform: translateY(120%); transition: transform .45s cubic-bezier(.2,.9,.25,1);
+  }
+  .toast.show { transform: translateY(0); }
+
+  input[type="date"] { direction: ltr; text-align: right; }
+</style>
+</head>
+
+<body class="antialiased">
+
+<!-- ================= HEADER ================= -->
+<header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-line">
+  <div class="max-w-5xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between">
+    <a href="diwane-al-maaref.html" class="flex items-center gap-3">
+      <img src="assets/logo.png" alt="شعار ديوان المعارف" class="h-12 w-12 object-contain">
+      <span class="hidden sm:flex flex-col leading-tight">
+        <span class="font-display font-semibold text-base text-navy">ديوان المعارف</span>
+        <span class="text-[10px] tracking-wide text-gold-dark font-bold">مؤسسة الدعم المدرسي</span>
+      </span>
+    </a>
+    <a href="diwane-al-maaref.html" class="text-sm font-bold text-navy/70 hover:text-gold-dark transition-colors flex items-center gap-2">
+      العودة للموقع
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="rotate-180"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- ================= HERO STRIP ================= -->
+<section class="bg-navy-900 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-[0.06] pointer-events-none flex items-center justify-center">
+    <svg viewBox="0 0 800 300" class="w-full h-full"><g stroke="#F0A93C" stroke-width="1.5">
+      <circle cx="400" cy="150" r="260"/><circle cx="400" cy="150" r="180"/><circle cx="400" cy="150" r="100"/>
+    </g></svg>
+  </div>
+  <div class="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-16 relative text-center">
+    <span class="text-gold text-xs font-extrabold uppercase tracking-[0.2em]">التسجيل الأولي</span>
+    <h1 class="font-display text-white text-3xl sm:text-4xl font-semibold mt-4 leading-tight">استمارة تسجيل التلميذ (ة)</h1>
+    <p class="text-white/70 mt-4 max-w-2xl mx-auto text-sm sm:text-[15px] leading-relaxed">
+      يرجى تعبئة جميع المعلومات بدقة وإرفاق الوثائق المطلوبة. سيتم التواصل معكم من طرف إدارة المؤسسة لتأكيد التسجيل النهائي.
+    </p>
+  </div>
+</section>
+
+<!-- ================= FORM ================= -->
+<main class="max-w-5xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
+
+  <!-- Progress indicator -->
+  <div class="flex items-center justify-center gap-2 mb-12" aria-hidden="true">
+    <span class="progress-dot w-2.5 h-2.5 rounded-full bg-gold"></span>
+    <span class="progress-dot w-2.5 h-2.5 rounded-full bg-gold"></span>
+    <span class="progress-dot w-2.5 h-2.5 rounded-full bg-gold"></span>
+    <span class="progress-dot w-2.5 h-2.5 rounded-full bg-gold"></span>
+  </div>
+
+  <form id="regForm" novalidate class="space-y-8">
+
+    <!-- ===== SECTION 1 : Student info ===== -->
+    <section class="step-card bg-white border border-line rounded-3xl p-6 sm:p-9 shadow-sm">
+      <div class="flex items-center gap-4 mb-7">
+        <div class="w-11 h-11 rounded-xl bg-navy grid place-items-center shrink-0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#F0A93C" stroke-width="1.8"/><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" stroke="#F0A93C" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <h2 class="font-display font-semibold text-navy text-xl">المعلومات الشخصية للتلميذ (ة)</h2>
+          <p class="text-ink/50 text-xs mt-1">Informations personnelles de l'élève</p>
+        </div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-6">
+        <div>
+          <label for="firstName" class="field-label block mb-2">الاسم الأول <span class="text-red-500">*</span></label>
+          <input id="firstName" name="firstName" type="text" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none" placeholder="مثال: محمد">
+          <p class="field-hint mt-1" data-error></p>
+        </div>
+        <div>
+          <label for="lastName" class="field-label block mb-2">الاسم العائلي (النسب) <span class="text-red-500">*</span></label>
+          <input id="lastName" name="lastName" type="text" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none" placeholder="مثال: العلوي">
+          <p class="field-hint mt-1" data-error></p>
+        </div>
+        <div>
+          <label for="dob" class="field-label block mb-2">تاريخ الازدياد <span class="text-red-500">*</span></label>
+          <input id="dob" name="dob" type="date" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none num">
+          <p class="field-hint mt-1" data-error></p>
+        </div>
+        <div>
+          <label for="pob" class="field-label block mb-2">مكان الازدياد <span class="text-red-500">*</span></label>
+          <input id="pob" name="pob" type="text" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none" placeholder="مثال: القنيطرة">
+          <p class="field-hint mt-1" data-error></p>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <label class="field-label block mb-2">صورة شخصية للتلميذ (ة) <span class="text-red-500">*</span></label>
+        <div id="dropPhoto" class="file-drop rounded-2xl p-5 flex items-center gap-4 cursor-pointer">
+          <div class="w-16 h-16 rounded-xl bg-mist grid place-items-center overflow-hidden shrink-0">
+            <img id="photoPreview" class="hidden w-full h-full object-cover" alt="">
+            <svg id="photoIcon" width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#5B3AA6" stroke-width="1.8"/><circle cx="9" cy="10" r="1.6" fill="#5B3AA6"/><path d="M4 17l5-4 4 3 3-2 4 3" stroke="#5B3AA6" stroke-width="1.8"/></svg>
+          </div>
+          <div class="flex-1 text-right">
+            <p id="photoLabel" class="text-sm font-bold text-navy">اضغط لرفع صورة شخصية</p>
+            <p class="text-xs text-ink/45 mt-0.5">JPG أو PNG — بحجم أقصى 5 ميغا</p>
+          </div>
+          <input id="photoFile" name="photoFile" type="file" accept="image/*" required class="hidden">
+        </div>
+        <p class="field-hint mt-1" data-error></p>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 2 : Parents info ===== -->
+    <section class="step-card bg-white border border-line rounded-3xl p-6 sm:p-9 shadow-sm">
+      <div class="flex items-center gap-4 mb-7">
+        <div class="w-11 h-11 rounded-xl bg-navy grid place-items-center shrink-0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7.5-4.6-10-9.1C.5 8.2 2.6 4.5 6.4 4.1c2-.2 3.7.8 5.6 3 1.9-2.2 3.6-3.2 5.6-3 3.8.4 5.9 4.1 4.4 7.8C19.5 16.4 12 21 12 21z" stroke="#F0A93C" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <h2 class="font-display font-semibold text-navy text-xl">معلومات الأولياء</h2>
+          <p class="text-ink/50 text-xs mt-1">Informations des parents et tuteurs</p>
+        </div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-6">
+        <div>
+          <label for="fatherName" class="field-label block mb-2">الاسم الكامل للأب <span class="text-red-500">*</span></label>
+          <input id="fatherName" name="fatherName" type="text" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none">
+          <p class="field-hint mt-1" data-error></p>
+        </div>
+        <div>
+          <label for="motherName" class="field-label block mb-2">الاسم الكامل للأم <span class="text-red-500">*</span></label>
+          <input id="motherName" name="motherName" type="text" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none">
+          <p class="field-hint mt-1" data-error></p>
+        </div>
+        <div>
+          <label for="fatherCIN" class="field-label block mb-2">رقم بطاقة التعريف الوطنية للأب <span class="text-red-500">*</span></label>
+          <input id="fatherCIN" name="fatherCIN" type="text" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none num" placeholder="مثال: AB123456">
+          <p class="field-hint mt-1" data-error></p>
+        </div>
+        <div>
+          <label for="motherCIN" class="field-label block mb-2">رقم بطاقة التعريف الوطنية للأم <span class="text-red-500">*</span></label>
+          <input id="motherCIN" name="motherCIN" type="text" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none num" placeholder="مثال: AB654321">
+          <p class="field-hint mt-1" data-error></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 3 : Documents ===== -->
+    <section class="step-card bg-white border border-line rounded-3xl p-6 sm:p-9 shadow-sm">
+      <div class="flex items-center gap-4 mb-7">
+        <div class="w-11 h-11 rounded-xl bg-navy grid place-items-center shrink-0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 19V6a2 2 0 012-2h9l5 5v10a2 2 0 01-2 2H6a2 2 0 01-2-2z" stroke="#F0A93C" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 4v5h5" stroke="#F0A93C" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <h2 class="font-display font-semibold text-navy text-xl">الوثائق المطلوبة</h2>
+          <p class="text-ink/50 text-xs mt-1">Documents obligatoires (PDF ou image, 5 Mo max)</p>
+        </div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-6">
+        <div>
+          <label class="field-label block mb-2">نسخة من عقد الازدياد <span class="text-red-500">*</span></label>
+          <div id="dropBirth" class="file-drop rounded-2xl p-5 flex items-center gap-4 cursor-pointer">
+            <div class="w-12 h-12 rounded-xl bg-mist grid place-items-center shrink-0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 19V6a2 2 0 012-2h9l5 5v10a2 2 0 01-2 2H6a2 2 0 01-2-2z" stroke="#5B3AA6" stroke-width="1.8" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="flex-1">
+              <p id="birthLabel" class="text-sm font-bold text-navy">اضغط لرفع الوثيقة</p>
+              <p class="text-xs text-ink/45 mt-0.5">PDF أو صورة</p>
+            </div>
+            <input id="birthFile" name="birthFile" type="file" accept="application/pdf,image/*" required class="hidden">
+          </div>
+          <p class="field-hint mt-1" data-error></p>
+        </div>
+
+        <div>
+          <label class="field-label block mb-2">نسخ بطاقة التعريف الوطنية للأبوين (الوجهين) <span class="text-red-500">*</span></label>
+          <div id="dropId" class="file-drop rounded-2xl p-5 flex items-center gap-4 cursor-pointer">
+            <div class="w-12 h-12 rounded-xl bg-mist grid place-items-center shrink-0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="#5B3AA6" stroke-width="1.8"/><circle cx="8" cy="12" r="1.8" stroke="#5B3AA6" stroke-width="1.6"/><path d="M13 10h5M13 14h5" stroke="#5B3AA6" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </div>
+            <div class="flex-1">
+              <p id="idLabel" class="text-sm font-bold text-navy">اضغط لرفع الوثيقة</p>
+              <p class="text-xs text-ink/45 mt-0.5">PDF أو صورة (وجهي البطاقتين)</p>
+            </div>
+            <input id="idFile" name="idFile" type="file" accept="application/pdf,image/*" required class="hidden">
+          </div>
+          <p class="field-hint mt-1" data-error></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 4 : Contact ===== -->
+    <section class="step-card bg-white border border-line rounded-3xl p-6 sm:p-9 shadow-sm">
+      <div class="flex items-center gap-4 mb-7">
+        <div class="w-11 h-11 rounded-xl bg-navy grid place-items-center shrink-0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 16.9v2.5a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3-8.7A2 2 0 014.1 2h2.5a2 2 0 012 1.7c.1.9.3 1.8.6 2.7a2 2 0 01-.5 2.1L7.6 9.6a16 16 0 006 6l1.1-1.1a2 2 0 012.1-.5c.9.3 1.8.5 2.7.6a2 2 0 011.7 2.1z" stroke="#F0A93C" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <h2 class="font-display font-semibold text-navy text-xl">معلومات الاتصال</h2>
+          <p class="text-ink/50 text-xs mt-1">Coordonnées de contact</p>
+        </div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-6">
+        <div>
+          <label for="motherPhone" class="field-label block mb-2">رقم هاتف الأم <span class="text-red-500">*</span></label>
+          <input id="motherPhone" name="motherPhone" type="tel" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none num" placeholder="06XXXXXXXX">
+          <p class="field-hint mt-1" data-error></p>
+        </div>
+        <div>
+          <label for="fatherPhone" class="field-label block mb-2">رقم هاتف الأب <span class="text-red-500">*</span></label>
+          <input id="fatherPhone" name="fatherPhone" type="tel" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none num" placeholder="06XXXXXXXX">
+          <p class="field-hint mt-1" data-error></p>
+        </div>
+        <div class="sm:col-span-2">
+          <label for="emergencyPhone" class="field-label block mb-2">رقم في حالة تعذر التواصل مع الأولياء <span class="text-red-500">*</span></label>
+          <input id="emergencyPhone" name="emergencyPhone" type="tel" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none num" placeholder="06XXXXXXXX">
+          <p class="field-hint mt-1" data-error></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SUBMIT ===== -->
+    <div class="flex flex-col items-center gap-5 pt-4">
+      <button id="submitBtn" type="submit" class="inline-flex items-center gap-3 bg-navy hover:bg-navy-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-extrabold px-10 py-4 rounded-full transition-colors shadow-xl shadow-navy/25 text-base">
+        <span id="btnSpinner" class="spinner hidden"></span>
+        <span id="btnText">تسجيل الطلب</span>
+      </button>
+      <p class="text-xs text-ink/45 text-center max-w-md">جميع المعلومات والوثائق المرسلة تُعامل بسرية تامة ولا تُستعمل إلا لأغراض التسجيل الإداري.</p>
+    </div>
+
+  </form>
+</main>
+
+<!-- ================= TOAST ================= -->
+<div id="toast" class="toast fixed bottom-6 inset-x-0 mx-auto w-fit max-w-[90vw] px-6 py-4 rounded-2xl shadow-2xl z-50 flex items-center gap-3">
+  <span id="toastIcon"></span>
+  <p id="toastText" class="text-sm font-bold"></p>
+</div>
+
+<footer class="bg-navy-900 py-8 mt-8">
+  <p class="text-center text-white/40 text-xs">© <span id="year"></span> ديوان المعارف — مؤسسة الدعم المدرسي</p>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// ================== CONFIGURATION ==================
+// Remplacez cette URL par celle de votre déploiement Google Apps Script
+// (voir backend/SETUP_INSTRUCTIONS.md)
+const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+const MAX_FILE_MB = 5;
+
+// ================== FILE DROP ZONES ==================
+function wireDropZone(zoneId, inputId, labelId, opts) {
+  const zone = document.getElementById(zoneId);
+  const input = document.getElementById(inputId);
+  const label = document.getElementById(labelId);
+
+  zone.addEventListener('click', () => input.click());
+  zone.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } });
+  zone.setAttribute('tabindex', '0');
+  zone.setAttribute('role', 'button');
+
+  input.addEventListener('change', () => {
+    const file = input.files[0];
+    if (!file) return;
+
+    if (file.size > MAX_FILE_MB * 1024 * 1024) {
+      showFieldError(input, `حجم الملف يتجاوز ${MAX_FILE_MB} ميغا`);
+      input.value = '';
+      return;
+    }
+    clearFieldError(input);
+
+    zone.classList.add('has-file');
+    label.textContent = file.name;
+
+    if (opts && opts.previewImg && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = document.getElementById(opts.previewImg);
+        const icon = document.getElementById(opts.iconEl);
+        img.src = e.target.result;
+        img.classList.remove('hidden');
+        if (icon) icon.classList.add('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+}
+
+wireDropZone('dropPhoto', 'photoFile', 'photoLabel', { previewImg: 'photoPreview', iconEl: 'photoIcon' });
+wireDropZone('dropBirth', 'birthFile', 'birthLabel');
+wireDropZone('dropId', 'idFile', 'idLabel');
+
+// ================== VALIDATION HELPERS ==================
+function showFieldError(input, message) {
+  const errorEl = input.closest('div').parentElement.querySelector('[data-error]') ||
+                  input.parentElement.querySelector('[data-error]');
+  if (errorEl) { errorEl.textContent = message; errorEl.classList.add('text-red-500'); }
+  input.classList.add('border-red-400');
+}
+function clearFieldError(input) {
+  const errorEl = input.closest('div').parentElement.querySelector('[data-error]') ||
+                  input.parentElement.querySelector('[data-error]');
+  if (errorEl) { errorEl.textContent = ''; }
+  input.classList.remove('border-red-400');
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) { resolve(null); return; }
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function showToast(message, type) {
+  const toast = document.getElementById('toast');
+  const icon = document.getElementById('toastIcon');
+  const text = document.getElementById('toastText');
+  text.textContent = message;
+
+  if (type === 'success') {
+    toast.className = 'toast show fixed bottom-6 inset-x-0 mx-auto w-fit max-w-[90vw] px-6 py-4 rounded-2xl shadow-2xl z-50 flex items-center gap-3 bg-navy text-white';
+    icon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#F0A93C"/><path d="M8 12.5l2.5 2.5L16 9" stroke="#1B1464" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  } else {
+    toast.className = 'toast show fixed bottom-6 inset-x-0 mx-auto w-fit max-w-[90vw] px-6 py-4 rounded-2xl shadow-2xl z-50 flex items-center gap-3 bg-red-600 text-white';
+    icon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="white" fill-opacity="0.2"/><path d="M12 8v5M12 16h.01" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>';
+  }
+
+  setTimeout(() => { toast.classList.remove('show'); }, 5000);
+}
+
+// ================== FORM SUBMIT ==================
+const form = document.getElementById('regForm');
+const submitBtn = document.getElementById('submitBtn');
+const btnSpinner = document.getElementById('btnSpinner');
+const btnText = document.getElementById('btnText');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  // Reset previous errors
+  form.querySelectorAll('[data-error]').forEach(el => el.textContent = '');
+  form.querySelectorAll('input').forEach(el => el.classList.remove('border-red-400'));
+
+  let firstInvalid = null;
+  const requiredInputs = form.querySelectorAll('[required]');
+  requiredInputs.forEach((input) => {
+    const isFile = input.type === 'file';
+    const isEmpty = isFile ? input.files.length === 0 : !input.value.trim();
+    if (isEmpty) {
+      showFieldError(input, 'هذا الحقل إجباري');
+      if (!firstInvalid) firstInvalid = input;
+    }
+  });
+
+  if (firstInvalid) {
+    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    showToast('يرجى تعبئة جميع الحقول الإجبارية', 'error');
+    return;
+  }
+
+  if (API_URL.indexOf('PASTE_YOUR') === 0) {
+    showToast('الرجاء ضبط رابط الخادم (API_URL) قبل الإرسال', 'error');
+    return;
+  }
+
+  submitBtn.disabled = true;
+  btnSpinner.classList.remove('hidden');
+  btnText.textContent = 'جاري الإرسال...';
+
+  try {
+    const photoFile = document.getElementById('photoFile').files[0];
+    const birthFile = document.getElementById('birthFile').files[0];
+    const idFile = document.getElementById('idFile').files[0];
+
+    const [photoB64, birthB64, idB64] = await Promise.all([
+      fileToBase64(photoFile),
+      fileToBase64(birthFile),
+      fileToBase64(idFile),
+    ]);
+
+    const payload = {
+      firstName: form.firstName.value.trim(),
+      lastName: form.lastName.value.trim(),
+      dob: form.dob.value,
+      pob: form.pob.value.trim(),
+      fatherName: form.fatherName.value.trim(),
+      motherName: form.motherName.value.trim(),
+      fatherCIN: form.fatherCIN.value.trim(),
+      motherCIN: form.motherCIN.value.trim(),
+      motherPhone: form.motherPhone.value.trim(),
+      fatherPhone: form.fatherPhone.value.trim(),
+      emergencyPhone: form.emergencyPhone.value.trim(),
+      files: {
+        photo: photoB64, photoType: photoFile ? photoFile.type : '',
+        birthCert: birthB64, birthCertType: birthFile ? birthFile.type : '',
+        idCards: idB64, idCardsType: idFile ? idFile.type : '',
+      }
+    };
+
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await res.json();
+
+    if (result.status === 'success') {
+      showToast('تم إرسال طلب التسجيل بنجاح! رقم الطلب: ' + result.id, 'success');
+      form.reset();
+      document.querySelectorAll('.file-drop').forEach(z => z.classList.remove('has-file'));
+      document.getElementById('photoPreview').classList.add('hidden');
+      document.getElementById('photoIcon').classList.remove('hidden');
+      document.getElementById('photoLabel').textContent = 'اضغط لرفع صورة شخصية';
+      document.getElementById('birthLabel').textContent = 'اضغط لرفع الوثيقة';
+      document.getElementById('idLabel').textContent = 'اضغط لرفع الوثيقة';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      showToast(result.message || 'حدث خطأ أثناء الإرسال', 'error');
+    }
+
+  } catch (err) {
+    showToast('تعذر الاتصال بالخادم. حاول مرة أخرى.', 'error');
+  } finally {
+    submitBtn.disabled = false;
+    btnSpinner.classList.add('hidden');
+    btnText.textContent = 'تسجيل الطلب';
+  }
+});
+</script>
+</body>
+</html>
