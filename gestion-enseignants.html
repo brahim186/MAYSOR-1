@@ -3,7 +3,8 @@
   const API_URL = "https://script.google.com/macros/s/AKfycbzp02iIFpmApUG9TwgOZCU9Fi6plJuEvICC2z2znb2urpqb_dqzTDjssoTF2Fv6ij6ZlQ/exec"; 
 
   // جلب التوكن المخزن فالسيسن تلقائياً حيت كيكون تسجل فاش الأدمين كيدير الدخول لـ لوحة التحكم
-  const ADMIN_TOKEN = sessionStorage.getItem('diwanAdminAuth') || ''; 
+  const TOKEN_KEY = 'diwane_admin_token'; // نفس المفتاح المستعمل فـ liste-eleves-admis.html
+  const ADMIN_TOKEN = sessionStorage.getItem(TOKEN_KEY) || ''; 
 
   // حماية الصفحة: إلا ماكانش الأدمن مسجل الدخول، كيرجعو لصفحة الدخول نيشان
   if (!ADMIN_TOKEN) {
@@ -189,7 +190,7 @@
   });
 
   document.getElementById('logoutBtn').addEventListener('click', () => {
-    sessionStorage.removeItem('diwanAdminAuth');
+    sessionStorage.removeItem(TOKEN_KEY);
     window.location.href = 'connexion.html';
   });
 
