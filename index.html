@@ -102,17 +102,18 @@
 
 <!-- ================= HEADER / NAV ================= -->
 <header id="siteHeader" class="fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur border-b border-line transition-shadow duration-300">
-  <div class="max-w-7xl mx-auto px-5 sm:px-8">
-    <div class="flex items-center justify-between h-20">
+  <div class="max-w-[96%] mx-auto px-2 sm:px-4">
+    <div class="flex items-center justify-between h-20 gap-4">
+      
       <a href="#accueil" class="flex items-center gap-3 group shrink-0">
         <img src="logo.png" alt="Logo DiwanE Al Maaref" class="h-14 w-14 object-contain">
-        <span class="hidden sm:flex flex-col leading-tight">
+        <span class="hidden xl:flex flex-col leading-tight">
           <span class="font-display font-semibold text-lg text-navy tracking-tight">DiwanE Al Maaref</span>
           <span class="text-[11px] uppercase tracking-[0.16em] text-gold-dark font-semibold">Soutien Scolaire</span>
         </span>
       </a>
 
-      <nav class="hidden lg:flex items-center gap-9 font-semibold text-[15px] text-navy/80">
+      <nav class="hidden lg:flex items-center gap-6 xl:gap-8 font-semibold text-[14px] xl:text-[15px] text-navy/80 whitespace-nowrap">
         <a href="#accueil" class="hover:text-gold-dark transition-colors">Accueil</a>
         <a href="#apropos" class="hover:text-gold-dark transition-colors">À propos</a>
         <a href="#programmes" class="hover:text-gold-dark transition-colors">Nos Programmes</a>
@@ -121,22 +122,24 @@
         <a href="#contact" class="hover:text-gold-dark transition-colors">Contact</a>
       </nav>
 
-      <div class="flex items-center gap-3">
-        <a href="admin-dashboard.html" class="hidden sm:inline-flex items-center gap-2 bg-gold hover:bg-gold-dark text-navy-900 text-sm font-bold px-5 py-3 rounded-full transition-colors shadow-lg shadow-gold/30">
+      <div class="flex items-center gap-3 shrink-0">
+        <a href="admin-dashboard.html" class="hidden sm:inline-flex items-center gap-2 bg-gold hover:bg-gold-dark text-navy-900 text-xs xl:text-sm font-bold px-4 py-2.5 xl:px-5 xl:py-3 rounded-full transition-colors shadow-lg shadow-gold/30 whitespace-nowrap">
           Espace Administratif
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="rtl:rotate-180"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        <a href="inscription.html" class="hidden sm:inline-flex items-center gap-2 bg-navy hover:bg-navy-700 text-white text-sm font-bold px-5 py-3 rounded-full transition-colors shadow-lg shadow-navy/20">
+        <a href="inscription.html" class="hidden sm:inline-flex items-center gap-2 bg-navy hover:bg-navy-700 text-white text-xs xl:text-sm font-bold px-4 py-2.5 xl:px-5 xl:py-3 rounded-full transition-colors shadow-lg shadow-navy/20 whitespace-nowrap">
           Portail d'Inscription
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="rtl:rotate-180"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <button id="menuBtn" aria-label="Ouvrir le menu" aria-expanded="false" class="lg:hidden w-11 h-11 grid place-items-center rounded-full border border-line text-navy">
           <svg id="menuIcon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </button>
       </div>
+
     </div>
   </div>
-
+</header>
+  
   <!-- Mobile menu -->
   <div id="mobileMenu" class="lg:hidden hidden border-t border-line bg-white">
     <nav class="px-5 py-4 flex flex-col gap-1 font-semibold text-navy">
@@ -146,7 +149,7 @@
       <a href="#calendrier" class="py-3 border-b border-line/70">Calendrier</a>
       <a href="#temoignages" class="py-3 border-b border-line/70">Témoignages</a>
       <a href="#contact" class="py-3 border-b border-line/70">Contact</a>
-      <a href="admin-dashboard.html" class="mt-3 text-center bg-gold text-navy-900 font-bold px-5 py-3 rounded-full">فضاء المؤسسة</a>
+      <a href="admin-dashboard.html" class="mt-3 text-center bg-gold text-navy-900 font-bold px-5 py-3 rounded-full">Espace Administratif</a>
       <a href="inscription.html" class="mt-2 text-center bg-navy text-white font-bold px-5 py-3 rounded-full">Portail d'Inscription</a>
     </nav>
   </div>
