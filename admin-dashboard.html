@@ -12,7 +12,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Fraunces:wght@500;600&family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <script src="https://cdn.tailwindcss.com"></script>
-<!-- مكتبة توليد الـ PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
@@ -508,18 +507,22 @@ async function deleteRecordFromServer(id, rowElement) {
     const url = API_URL + '?token=' + encodeURIComponent(token) +
       '&action=deleteRecord&id=' + encodeURIComponent(id);
     
-    await fetch(url);
-    
-    rowElement.style.transition = "all 0.4s ease";
-    rowElement.style.opacity = "0";
-    setTimeout(() => {
-      rowElement.remove();
-      allRecords = allRecords.filter(rec => rec.ID !== id);
-      document.getElementById('totalCount').textContent = allRecords.length;
-    }, 400);
+    const res = await fetch(url);
+    const data = await res.json();
 
+    if (data.status === 'success') {
+      rowElement.style.transition = "all 0.4s ease";
+      rowElement.style.opacity = "0";
+      setTimeout(() => {
+        rowElement.remove();
+        allRecords = allRecords.filter(rec => rec.ID !== id);
+        document.getElementById('totalCount').textContent = allRecords.length;
+      }, 400);
+    } else {
+      alert("Erreur lors de la suppression sur le serveur.");
+    }
   } catch (err) {
-    alert("Erreur lors de la suppression.");
+    alert("Erreur réseau lors de la suppression.");
   }
 }
 
@@ -553,9 +556,8 @@ function buildAndDownloadPdf(r) {
   const badgeColor = r.Statut === 'Accepté' ? '#10B981' : '#EF4444';
 
   container.innerHTML = `
-    <!-- الجزء العلوي يحتوي على اللوغو فوق اسم المؤسسة تماماً ومحاذى للمنتصف -->
-    <div style="text-align: center; border-b:2px solid #1B1464; padding-bottom:20px; margin-bottom:30px;">
-      <img src="logo.png" alt="Logo" style="height: 70px; width: 70px; object-contain: true; margin-bottom: 12px;">
+    <div style="text-align: center; border-bottom:2px solid #1B1464; padding-bottom:20px; margin-bottom:30px;">
+      <img src="logo.png" alt="Logo" style="height: 80px; width: 80px; display: block; margin: 0 auto 12px auto;">
       <h1 style="color:#1B1464; font-size:24px; margin:0; font-weight:bold;">Institution Diwan Al Maaref</h1>
       <p style="color:#F0A93C; font-size:12px; margin:5px 0 0 0; font-weight:bold; text-transform:uppercase;">Fiche d'Inscription Administrative</p>
     </div>
