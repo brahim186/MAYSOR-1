@@ -314,7 +314,10 @@ async function fetchRecords(token, silent) {
   }
 
   try {
-    const res = await fetch(API_URL + '?token=' + encodeURIComponent(token));
+    const res = await fetch(
+      API_URL + '?token=' + encodeURIComponent(token) + '&_ts=' + Date.now(),
+      { cache: 'no-store' }
+    );
     const data = await res.json();
 
     if (data.status === 'success') {
@@ -482,9 +485,10 @@ async function updateStatusOnServer(id, status, rowElement) {
   try {
     const url = API_URL + '?token=' + encodeURIComponent(token) +
       '&action=updateStatus&id=' + encodeURIComponent(id) +
-      '&status=' + encodeURIComponent(status);
+      '&status=' + encodeURIComponent(status) +
+      '&_ts=' + Date.now();
     
-    const res = await fetch(url);
+    const res = await fetch(url, { cache: 'no-store' });
     const data = await res.json();
 
     if (data.status === 'success') {
@@ -505,9 +509,10 @@ async function deleteRecordFromServer(id, rowElement) {
   const token = sessionStorage.getItem(TOKEN_KEY);
   try {
     const url = API_URL + '?token=' + encodeURIComponent(token) +
-      '&action=deleteRecord&id=' + encodeURIComponent(id);
+      '&action=deleteRecord&id=' + encodeURIComponent(id) +
+      '&_ts=' + Date.now();
     
-    const res = await fetch(url);
+    const res = await fetch(url, { cache: 'no-store' });
     const data = await res.json();
 
     if (data.status === 'success') {
