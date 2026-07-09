@@ -158,14 +158,34 @@
           <label for="gender" class="field-label block mb-2">Genre / Sexe <span class="text-red-500">*</span></label>
           <select id="gender" name="gender" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none appearance-none cursor-pointer">
             <option value="" disabled selected hidden>Sélectionnez le genre</option>
-            <option value="Masculin">Masculin</option>
-            <option value="Féminin">Féminin</option>
+            <option value="M">Masculin (M)</option>
+            <option value="F">Féminin (F)</option>
           </select>
           <p class="field-hint mt-1" data-error></p>
         </div>
         <div>
           <label for="level" class="field-label block mb-2">Niveau d'inscription <span class="text-red-500">*</span></label>
-          <input id="level" name="level" type="text" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none" placeholder="Ex: 3ème année Collège, Tronc Commun, Primaire...">
+          <select id="level" name="level" required class="w-full rounded-xl border border-line bg-mist/50 px-4 py-3 text-sm focus:border-gold outline-none appearance-none cursor-pointer">
+            <option value="" disabled selected hidden>Sélectionnez le niveau</option>
+            <optgroup label="Primaire">
+              <option value="1ère année primaire">1ère année primaire</option>
+              <option value="2ème année primaire">2ème année primaire</option>
+              <option value="3ème année primaire">3ème année primaire</option>
+              <option value="4ème année primaire">4ème année primaire</option>
+              <option value="5ème année primaire">5ème année primaire</option>
+              <option value="6ème année primaire">6ème année primaire</option>
+            </optgroup>
+            <optgroup label="Collège">
+              <option value="1ère année collège">1ère année collège</option>
+              <option value="2ème année collège">2ème année collège</option>
+              <option value="3ème année collège">3ème année collège</option>
+            </optgroup>
+            <optgroup label="Lycée">
+              <option value="Tronc Commun">Tronc Commun</option>
+              <option value="1ère année Baccalauréat">1ère année Baccalauréat</option>
+              <option value="2ème année Baccalauréat">2ème année Baccalauréat</option>
+            </optgroup>
+          </select>
           <p class="field-hint mt-1" data-error></p>
         </div>
       </div>
