@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espace Enseignant | Diwan Al Maaref</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Fraunces:wght@500;600&family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          navy:  { DEFAULT:'#1B1464', 700:'#170F52', 900:'#100B3B' },
+          purple:{ DEFAULT:'#5B3AA6' },
+          gold:  { DEFAULT:'#F0A93C', light:'#FBC873', dark:'#D98F1F' },
+          ink:   '#221D3D',
+          mist:  '#F6F4FC',
+          line:  '#E7E2F3',
+        },
+        fontFamily: { sans: ['Inter','sans-serif'], display: ['Fraunces','serif'] }
+      }
+    }
+  }
+</script>
+
+<style>
+  body { font-family:'Inter', sans-serif; color:#221D3D; background:#F6F4FC; }
+  .font-display { font-family:'Fraunces', serif; }
+  ::selection { background:#F0A93C; color:#1B1464; }
+
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid #F0A93C; outline-offset: 2px; border-radius: 6px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration:.01ms !important; transition-duration:.01ms !important; }
+  }
+
+  .btn-primary { transition: transform .2s cubic-bezier(.2,.8,.25,1), box-shadow .2s ease, background-color .2s ease; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -12px rgba(27,20,100,.45); background-color:#170F52; }
+  .btn-primary:active { transform: translateY(0); }
+
+  .badge-lvl-primaire { background:#EEF2FF; color:#4338CA; }
+  .badge-lvl-college   { background:#FDF4E3; color:#B7791F; }
+  .badge-lvl-lycee     { background:#FDECEE; color:#BE123C; }
+  .badge-groupe-1      { background:#E6F7F1; color:#0E7C5A; }
+  .badge-groupe-2      { background:#E9F1FE; color:#1D5FC0; }
+
+  .row-enter { animation: rowEnter .35s cubic-bezier(.2,.8,.25,1) both; }
+  @keyframes rowEnter { from { opacity:0; transform: translateY(-6px); } to { opacity:1; transform: translateY(0); } }
+</style>
+</head>
+
+<body class="antialiased min-h-screen">
+
+<script>
+  // Garde d'accès : redirige vers la page de connexion enseignant si non authentifié.
+  let currentTeacher = null;
+  try {
+    const authRaw = sessionStorage.getItem('diwanTeacherAuth');
+    if (!authRaw) {
+      window.location.replace('connexion-enseignant.html');
+    } else {
+      const auth = JSON.parse(authRaw);
+      const teachers = JSON.parse(localStorage.getItem('diwanEnseignants')) || [];
+      currentTeacher = teachers.find((t) => String(t.id) === String(auth.id));
+      if (!currentTeacher) {
+        sessionStorage.removeItem('diwanTeacherAuth');
+        window.location.replace('connexion-enseignant.html');
+      }
+    }
+  } catch (e) {
+    window.location.replace('connexion-enseignant.html');
+  }
+</script>
+
+<header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <img src="logo.png" alt="Logo Diwan Al Maaref" class="h-11 w-11 object-contain">
+      <div class="hidden sm:flex flex-col leading-tight">
+        <span class="font-display font-semibold text-navy text-base">Espace Enseignant</span>
+        <span class="text-[11px] text-gold-dark font-bold">Diwan Al Maaref</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="index.html" class="inline-flex items-center gap-2 text-xs font-bold text-navy/70 hover:text-gold-dark border border-line rounded-full px-4 py-2.5 transition-colors bg-white">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="hidden sm:inline">Retour au site</span>
+      </a>
+      <button id="logoutBtn" type="button" class="inline-flex items-center gap-2 text-xs font-bold text-rose-600 hover:text-white hover:bg-rose-600 border border-rose-200 rounded-full px-4 py-2.5 transition-colors bg-rose-50">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="hidden sm:inline">Déconnexion</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-5 sm:px-8 py-12 flex flex-col gap-10">
+
+  <!-- Profil de l'enseignant -->
+  <section class="bg-white border border-line rounded-3xl p-6 sm:p-8 shadow-sm">
+    <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+      <div class="w-16 h-16 rounded-2xl bg-navy/10 grid place-items-center shrink-0">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" stroke="#1B1464" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="7" r="4" stroke="#1B1464" stroke-width="1.8"/></svg>
+      </div>
+      <div>
+        <h2 id="welcomeTitle" class="font-display font-semibold text-navy text-2xl">Bonjour</h2>
+        <p class="text-ink/50 text-sm mt-1">Voici vos informations et vos classes.</p>
+      </div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+      <div class="bg-mist rounded-2xl px-4 py-3.5">
+        <p class="text-[10px] font-extrabold uppercase tracking-wide text-ink/40 mb-1">Genre</p>
+        <p id="infoGenre" class="text-sm font-bold text-navy">—</p>
+      </div>
+      <div class="bg-mist rounded-2xl px-4 py-3.5">
+        <p class="text-[10px] font-extrabold uppercase tracking-wide text-ink/40 mb-1">Téléphone</p>
+        <p id="infoTelephone" class="text-sm font-bold text-navy">—</p>
+      </div>
+      <div class="bg-mist rounded-2xl px-4 py-3.5 sm:col-span-2 lg:col-span-1">
+        <p class="text-[10px] font-extrabold uppercase tracking-wide text-ink/40 mb-1">Adresse</p>
+        <p id="infoAdresse" class="text-sm font-bold text-navy truncate">—</p>
+      </div>
+      <div class="bg-mist rounded-2xl px-4 py-3.5">
+        <p class="text-[10px] font-extrabold uppercase tracking-wide text-ink/40 mb-1">Groupe</p>
+        <p id="infoGroupe" class="text-sm font-bold text-navy">—</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mes classes -->
+  <section class="bg-white border border-line rounded-3xl p-6 sm:p-8 shadow-sm">
+    <h3 class="font-display font-semibold text-navy text-lg mb-5">Mes classes</h3>
+    <div id="classesWrap" class="flex flex-wrap gap-2"></div>
+  </section>
+
+  <!-- Mes élèves -->
+  <section class="bg-white border border-line rounded-3xl shadow-sm overflow-hidden">
+    <div class="px-6 sm:px-8 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line">
+      <div>
+        <h3 class="font-display font-semibold text-navy text-lg">Mes élèves</h3>
+        <p id="studentCount" class="text-ink/50 text-xs mt-1">0 élève</p>
+      </div>
+      <a href="saisie-notes.html" class="btn-primary inline-flex items-center gap-2 bg-navy text-white font-extrabold text-sm rounded-full px-6 py-3 whitespace-nowrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Saisie des notes
+      </a>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-[11px] font-extrabold uppercase tracking-wide text-ink/40 bg-mist/60">
+            <th class="px-6 sm:px-8 py-3.5 whitespace-nowrap">Nom</th>
+            <th class="px-4 py-3.5 whitespace-nowrap">Prénom</th>
+            <th class="px-4 py-3.5 whitespace-nowrap">Matricule</th>
+            <th class="px-4 py-3.5 whitespace-nowrap">Niveau</th>
+            <th class="px-4 sm:px-8 py-3.5 whitespace-nowrap">Groupe</th>
+          </tr>
+        </thead>
+        <tbody id="studentsTableBody" class="divide-y divide-line"></tbody>
+      </table>
+    </div>
+
+    <div id="emptyState" class="hidden px-8 py-14 text-center">
+      <p class="text-ink/40 text-sm">Aucun élève trouvé pour vos classes pour le moment.</p>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  function levelBadgeClass(niveau) {
+    if (niveau.includes('primaire')) return 'badge-lvl-primaire';
+    if (niveau.includes('collège')) return 'badge-lvl-college';
+    return 'badge-lvl-lycee';
+  }
+  function groupBadgeClass(groupe) {
+    return groupe === 'Groupe 1' ? 'badge-groupe-1' : 'badge-groupe-2';
+  }
+
+  function loadStudents() {
+    try {
+      return JSON.parse(localStorage.getItem('diwanEleves')) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  if (currentTeacher) {
+    document.getElementById('welcomeTitle').textContent = `Bonjour, ${currentTeacher.prenom} ${currentTeacher.nom}`;
+    document.getElementById('infoGenre').textContent = currentTeacher.genre || '—';
+    document.getElementById('infoTelephone').textContent = currentTeacher.telephone || '—';
+    document.getElementById('infoAdresse').textContent = currentTeacher.adresse || '—';
+    document.getElementById('infoGroupe').textContent = currentTeacher.groupe || '—';
+
+    const classesWrap = document.getElementById('classesWrap');
+    const niveaux = currentTeacher.niveaux || [];
+    niveaux.forEach((n) => {
+      const span = document.createElement('span');
+      span.className = `inline-flex items-center gap-1.5 text-xs font-extrabold rounded-full px-3.5 py-2 ${levelBadgeClass(n)}`;
+      span.textContent = `${n} — ${currentTeacher.groupe}`;
+      classesWrap.appendChild(span);
+    });
+    if (niveaux.length === 0) {
+      classesWrap.innerHTML = '<p class="text-ink/40 text-sm">Aucune classe assignée pour le moment.</p>';
+    }
+
+    const allStudents = loadStudents();
+    const myStudents = allStudents.filter(
+      (s) => niveaux.includes(s.niveau) && s.groupe === currentTeacher.groupe
+    );
+
+    const tbody = document.getElementById('studentsTableBody');
+    const emptyState = document.getElementById('emptyState');
+    document.getElementById('studentCount').textContent =
+      myStudents.length + (myStudents.length > 1 ? ' élèves' : ' élève');
+
+    if (myStudents.length === 0) {
+      emptyState.classList.remove('hidden');
+    } else {
+      myStudents.forEach((s) => {
+        const tr = document.createElement('tr');
+        tr.className = 'row-enter hover:bg-mist/50 transition-colors';
+        tr.innerHTML = `
+          <td class="px-6 sm:px-8 py-4 font-bold text-navy whitespace-nowrap">${s.nom}</td>
+          <td class="px-4 py-4 whitespace-nowrap">${s.prenom}</td>
+          <td class="px-4 py-4 whitespace-nowrap font-mono text-xs font-bold text-purple">${s.matricule}</td>
+          <td class="px-4 py-4 whitespace-nowrap"><span class="inline-block text-[11px] font-extrabold rounded-full px-3 py-1 ${levelBadgeClass(s.niveau)}">${s.niveau}</span></td>
+          <td class="px-4 sm:px-8 py-4 whitespace-nowrap"><span class="inline-block text-[11px] font-extrabold rounded-full px-3 py-1 ${groupBadgeClass(s.groupe)}">${s.groupe}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+  }
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    sessionStorage.removeItem('diwanTeacherAuth');
+    window.location.href = 'connexion-enseignant.html';
+  });
+</script>
+
+</body>
+</html>
