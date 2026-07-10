@@ -168,55 +168,27 @@
   </div>
 </template>
 
-<script>
-const API_URL = "https://script.google.com/macros/s/AKfycbzp02iIFpmApUG9TwgOZCU9Fi6plJuEvICC2z2znb2urpqb_dqzTDjssoTF2Fv6ij6ZlQ/exec";
-const TOKEN_KEY = 'diwane_admin_token';
-const GROUPS_KEY = 'diwane_student_groups'; // stockage local temporaire des affectations de groupe
+<script type="module">
+import { auth, db, signOut, collection, getDocs, doc, updateDoc, requireAdmin } from './firebase-config.js';
 
 // Liste des groupes disponibles — à ajuster selon les besoins de l'établissement.
 const AVAILABLE_GROUPS = ['Groupe A', 'Groupe B', 'Groupe C', 'Groupe D', 'Groupe E', 'Groupe F'];
 
-let allRecords = [];   // tous les élèves admis
-let groupMap = {};     // { matricule: "Groupe A" }
+let allRecords = [];   // tous les élèves admis (statut === 'Accepté'), avec { id, ...data }
 
 const dashboard = document.getElementById('dashboard');
 const noSessionGate = document.getElementById('noSessionGate');
 
-function loadGroupMap() {
-  try {
-    return JSON.parse(localStorage.getItem(GROUPS_KEY)) || {};
-  } catch (e) {
-    return {};
-  }
-}
-
-function saveGroupMap() {
-  localStorage.setItem(GROUPS_KEY, JSON.stringify(groupMap));
-}
-
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  sessionStorage.removeItem(TOKEN_KEY);
-  location.href = 'admin-dashboard.html';
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await signOut(auth);
+  location.href = 'connexion.html';
 });
 
-document.getElementById('refreshBtn').addEventListener('click', () => {
-  const token = sessionStorage.getItem(TOKEN_KEY);
-  if (token) fetchRecords(token);
-});
+document.getElementById('refreshBtn').addEventListener('click', () => fetchRecords());
 
-(function init() {
-  const token = sessionStorage.getItem(TOKEN_KEY);
-  groupMap = loadGroupMap();
+requireAdmin(() => fetchRecords());
 
-  if (!token) {
-    noSessionGate.classList.remove('hidden');
-    dashboard.classList.add('hidden');
-    return;
-  }
-  fetchRecords(token);
-})();
-
-async function fetchRecords(token) {
+async function fetchRecords() {
   const loadingState = document.getElementById('loadingState');
   const tableWrap = document.getElementById('tableWrap');
   const emptyState = document.getElementById('emptyState');
@@ -228,23 +200,12 @@ async function fetchRecords(token) {
   emptyState.classList.add('hidden');
 
   try {
-    const res = await fetch(
-      API_URL + '?token=' + encodeURIComponent(token) + '&_ts=' + Date.now(),
-      { cache: 'no-store' }
-    );
-    const data = await res.json();
-
-    if (data.status === 'success') {
-      const records = data.records || [];
-      allRecords = records.filter(r => r.Statut === 'Accepté');
-      populateLevelFilter(allRecords);
-      populateGroupFilter();
-      applyFilters();
-    } else {
-      sessionStorage.removeItem(TOKEN_KEY);
-      noSessionGate.classList.remove('hidden');
-      dashboard.classList.add('hidden');
-    }
+    const snap = await getDocs(collection(db, 'students'));
+    const records = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    allRecords = records.filter((r) => r.statut === 'Accepté');
+    populateLevelFilter(allRecords);
+    populateGroupFilter();
+    applyFilters();
   } catch (err) {
     loadingState.classList.add('hidden');
     emptyState.classList.remove('hidden');
@@ -257,7 +218,7 @@ async function fetchRecords(token) {
 function populateLevelFilter(records) {
   const select = document.getElementById('levelFilter');
   const current = select.value;
-  const levels = [...new Set(records.map(r => r.Niveau).filter(Boolean))].sort();
+  const levels = [...new Set(records.map(r => r.niveau).filter(Boolean))].sort();
   select.innerHTML = '<option value="">Tous les niveaux</option>' +
     levels.map(l => `<option value="${l}">${l}</option>`).join('');
   select.value = current || '';
@@ -280,11 +241,11 @@ function applyFilters() {
 
   let filtered = allRecords.filter(r => {
     const matchesQuery = !q ||
-      (r.Prenom || '').toLowerCase().includes(q) ||
-      (r.Nom || '').toLowerCase().includes(q) ||
-      (r.ID || '').toLowerCase().includes(q);
-    const matchesLevel = !level || r.Niveau === level;
-    const studentGroup = groupMap[r.ID] || '';
+      (r.prenom || '').toLowerCase().includes(q) ||
+      (r.nom || '').toLowerCase().includes(q) ||
+      (r.id || '').toLowerCase().includes(q);
+    const matchesLevel = !level || r.niveau === level;
+    const studentGroup = (r.groupe && r.groupe !== 'Non assigné') ? r.groupe : '';
     const matchesGroup = !group ||
       (group === '__none__' ? !studentGroup : studentGroup === group);
     return matchesQuery && matchesLevel && matchesGroup;
@@ -306,7 +267,7 @@ function renderRecords(records) {
 
   container.innerHTML = '';
   totalCount.textContent = allRecords.length;
-  assignedCount.textContent = allRecords.filter(r => !!groupMap[r.ID]).length;
+  assignedCount.textContent = allRecords.filter(r => r.groupe && r.groupe !== 'Non assigné').length;
 
   if (records.length === 0) {
     tableWrap.classList.add('hidden');
@@ -324,28 +285,32 @@ function renderRecords(records) {
     const node = template.content.cloneNode(true);
     const rowRoot = node.querySelector('.row-card');
 
-    node.querySelector('[data-field="id"]').textContent = r.ID ?? '—';
-    node.querySelector('[data-field="firstName"]').textContent = r.Prenom || '—';
-    node.querySelector('[data-field="lastName"]').textContent = r.Nom || '—';
-    node.querySelector('[data-field="dob"]').textContent = r.DateNaissance || '—';
-    node.querySelector('[data-field="level"]').textContent = r.Niveau || '—';
+    node.querySelector('[data-field="id"]').textContent = r.id ?? '—';
+    node.querySelector('[data-field="firstName"]').textContent = r.prenom || '—';
+    node.querySelector('[data-field="lastName"]').textContent = r.nom || '—';
+    node.querySelector('[data-field="dob"]').textContent = r.dateNaissance || '—';
+    node.querySelector('[data-field="level"]').textContent = r.niveau || '—';
 
     const select = node.querySelector('[data-field="groupSelect"]');
     select.innerHTML = '<option value="">— Choisir —</option>' +
       AVAILABLE_GROUPS.map(g => `<option value="${g}">${g}</option>`).join('');
-    select.value = groupMap[r.ID] || '';
+    select.value = (r.groupe && r.groupe !== 'Non assigné') ? r.groupe : '';
 
-    select.addEventListener('change', () => {
-      const val = select.value;
-      if (val) {
-        groupMap[r.ID] = val;
-      } else {
-        delete groupMap[r.ID];
+    select.addEventListener('change', async () => {
+      const val = select.value || 'Non assigné';
+      select.disabled = true;
+      try {
+        await updateDoc(doc(db, 'students', r.id), { groupe: val });
+        r.groupe = val;
+        rowRoot.classList.add('saved-flash');
+        setTimeout(() => rowRoot.classList.remove('saved-flash'), 1000);
+        document.getElementById('assignedCount').textContent =
+          allRecords.filter(x => x.groupe && x.groupe !== 'Non assigné').length;
+      } catch (e) {
+        alert("Erreur lors de l'enregistrement du groupe.");
+      } finally {
+        select.disabled = false;
       }
-      saveGroupMap();
-      rowRoot.classList.add('saved-flash');
-      setTimeout(() => rowRoot.classList.remove('saved-flash'), 1000);
-      document.getElementById('assignedCount').textContent = allRecords.filter(x => !!groupMap[x.ID]).length;
     });
 
     container.appendChild(rowRoot);
