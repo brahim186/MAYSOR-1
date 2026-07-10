@@ -6,9 +6,9 @@ import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10
 // مفاتيح الربط الخاصة بمشروع ديوان المعارف الفعلي من شاشتك
 const firebaseConfig = {
   apiKey: "AIzaSyCrQfqGqsReOTblvAKO6aQ9BNn2rilZ2-E",
-  authDomain: "chaterrr-abcd7.firebaseapp.com",
-  projectId: "chaterrr-abcd7",
-  storageBucket: "chaterrr-abcd7.firebasestorage.app",
+  authDomain: "chaterr-dbcd7.firebaseapp.com",
+  projectId: "chaterr-dbcd7",
+  storageBucket: "chaterr-dbcd7.firebasestorage.app",
   messagingSenderId: "163828603452",
   appId: "1:163828603452:web:af0df6464bd6af8c594139",
   measurementId: "G-DFD9P3R01B"
