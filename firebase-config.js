@@ -1,7 +1,7 @@
 // استيراد الدوال الأساسية السحابية (CDN) لتتوافق مع نظام الـ Modules في موقعك
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
 // مفاتيح الربط الخاصة بمشروع ديوان المعارف الفعلي من شاشتك
@@ -57,7 +57,29 @@ async function generateMatricule() {
   return `DA-${year}-${padded}`;
 }
 
-// تصدير المتغيرات والدوال لتقرأها صفحات الموقع (تسجيل الدخول والتسجيل ورفع الملفات)
+/**
+ * حارس الدخول لصفحات الأدمين: يتحقق من وجود جلسة تسجيل دخول نشطة
+ * ويتحكم تلقائيا فإظهار/إخفاء العناصر #dashboard و #noSessionGate
+ * (يجب أن تحتوي كل صفحة أدمين على هذين المعرّفين فالـ HTML)
+ * @param {(user: import('firebase/auth').User) => void} onAuthenticated - تنفذ فقط إذا كانت هناك جلسة صالحة
+ */
+function requireAdmin(onAuthenticated) {
+  onAuthStateChanged(auth, (user) => {
+    const gate = document.getElementById('noSessionGate');
+    const dashboard = document.getElementById('dashboard');
+
+    if (user) {
+      if (gate) gate.classList.add('hidden');
+      if (dashboard) dashboard.classList.remove('hidden');
+      onAuthenticated(user);
+    } else {
+      if (dashboard) dashboard.classList.add('hidden');
+      if (gate) gate.classList.remove('hidden');
+    }
+  });
+}
+
+// تصدير المتغيرات والدوال لتقرأها صفحات الموقع (تسجيل الدخول والتسجيل ورفع الملفات ولوحات الأدمين)
 export {
   auth,
   db,
@@ -65,9 +87,13 @@ export {
   doc,
   getDoc,
   setDoc,
+  updateDoc,
+  collection,
+  getDocs,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   uploadToStorage,
-  generateMatricule
+  generateMatricule,
+  requireAdmin
 };
