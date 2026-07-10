@@ -132,9 +132,9 @@
 
   </form>
 
-<script>
-  // ضع هنا نفس رابط الـ Web App المستعمل فـ باقي الصفحات (نفس الباك-إند الموحد)
-  const API_URL = "رابط_الـ_Web_App_الجديد_ديالك_هنا";
+<script type="module">
+  import { auth, db, doc, getDoc, usernameToEmail, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+    from './firebase-config.js';
 
   const form      = document.getElementById('loginForm');
   const errorMsg  = document.getElementById('errorMsg');
@@ -151,10 +151,12 @@
       : '<path d="M3 3l18 18M10.6 10.6a3 3 0 004.24 4.24M9.5 5.14A11 11 0 0112 5c7 0 11 7 11 7a13.4 13.4 0 01-3.1 3.9M6.5 6.6C3.9 8.3 2 11 2 11s4 7 10 7c1.2 0 2.3-.2 3.4-.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
   });
 
-  // Si déjà authentifié pour cette session, aller directement à l'espace enseignant.
-  if (sessionStorage.getItem('diwanTeacherAuth')) {
-    window.location.replace('espace-enseignant.html');
-  }
+  // Si déjà connecté ET profil enseignant valide → direct vers l'espace enseignant.
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
+    const tDoc = await getDoc(doc(db, 'teachers', user.uid));
+    if (tDoc.exists()) window.location.replace('espace-enseignant.html');
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -173,28 +175,23 @@
     submitBtn.innerHTML = 'Connexion en cours...';
 
     try {
-      const res = await fetch(
-        `${API_URL}?action=teacherLogin&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
-        { cache: 'no-store' }
-      );
-      const data = await res.json();
+      const email = usernameToEmail(username);
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const tDoc = await getDoc(doc(db, 'teachers', cred.user.uid));
 
-      if (data.status === 'success' && data.teacher) {
-        // On stocke directement l'objet enseignant tel que renvoyé par l'API
-        // (id, nom, prenom, genre, adresse, telephone, niveau, groupe)
-        sessionStorage.setItem('diwanTeacherAuth', JSON.stringify(data.teacher));
+      if (tDoc.exists()) {
         window.location.href = 'espace-enseignant.html';
       } else {
-        errorMsg.textContent = "Nom d'utilisateur ou mot de passe incorrect.";
-        errorMsg.classList.remove('hidden');
-        form.classList.remove('shake');
-        void form.offsetWidth;
-        form.classList.add('shake');
-        pwdInput.value = '';
+        await signOut(auth);
+        throw new Error('NOT_TEACHER');
       }
     } catch (err) {
-      errorMsg.textContent = "Erreur de connexion au serveur.";
+      errorMsg.textContent = "Nom d'utilisateur ou mot de passe incorrect.";
       errorMsg.classList.remove('hidden');
+      form.classList.remove('shake');
+      void form.offsetWidth;
+      form.classList.add('shake');
+      pwdInput.value = '';
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalBtnHtml;
