@@ -67,26 +67,7 @@
 
 <body class="antialiased min-h-screen">
 
-<script>
-  // Garde d'accès : redirige vers la page de connexion enseignant si non authentifié.
-  let currentTeacher = null;
-  try {
-    const authRaw = sessionStorage.getItem('diwanTeacherAuth');
-    if (!authRaw) {
-      window.location.replace('connexion-enseignant.html');
-    } else {
-      const auth = JSON.parse(authRaw);
-      const teachers = JSON.parse(localStorage.getItem('diwanEnseignants')) || [];
-      currentTeacher = teachers.find((t) => String(t.id) === String(auth.id));
-      if (!currentTeacher) {
-        sessionStorage.removeItem('diwanTeacherAuth');
-        window.location.replace('connexion-enseignant.html');
-      }
-    }
-  } catch (e) {
-    window.location.replace('connexion-enseignant.html');
-  }
-</script>
+<!-- La garde d'accès Firebase est initialisée plus bas, dans le <script type="module"> -->
 
 <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
   <div class="max-w-6xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between gap-4">
@@ -149,25 +130,33 @@
 
 <div id="toastWrap" class="fixed bottom-6 inset-x-0 flex justify-center pointer-events-none z-50"></div>
 
-<script>
+<script type="module">
+  import {
+    auth, db, signOut, doc, getDoc, setDoc, collection, getDocs, query, where, requireTeacher
+  } from './firebase-config.js';
+
   function levelBadgeClass(niveau) {
+    if (!niveau) return 'badge-lvl-lycee';
     if (niveau.includes('primaire')) return 'badge-lvl-primaire';
     if (niveau.includes('collège')) return 'badge-lvl-college';
     return 'badge-lvl-lycee';
   }
 
-  function loadStudents() {
-    try { return JSON.parse(localStorage.getItem('diwanEleves')) || []; }
-    catch (e) { return []; }
+  async function loadMyStudents(teacher) {
+    const q = query(collection(db, 'students'), where('groupe', '==', teacher.groupe), where('statut', '==', 'Accepté'));
+    const snap = await getDocs(q);
+    return snap.docs
+      .map((d) => ({ id: d.id, ...d.data() }))
+      .filter((s) => (teacher.niveaux || []).includes(s.niveau));
   }
 
-  function loadNotes() {
-    try { return JSON.parse(localStorage.getItem('diwanNotes')) || {}; }
-    catch (e) { return {}; }
+  async function loadNoteFor(studentId) {
+    const snap = await getDoc(doc(db, 'notes', studentId));
+    return snap.exists() ? snap.data() : {};
   }
 
-  function saveNotes(notes) {
-    localStorage.setItem('diwanNotes', JSON.stringify(notes));
+  async function saveNoteFor(studentId, notesObj) {
+    await setDoc(doc(db, 'notes', studentId), notesObj, { merge: true });
   }
 
   function showToast(message) {
@@ -182,82 +171,79 @@
     setTimeout(() => toast.remove(), 2000);
   }
 
-  if (currentTeacher) {
-    const niveaux = currentTeacher.niveaux || [];
-    const allStudents = loadStudents();
-    const myStudents = allStudents.filter(
-      (s) => niveaux.includes(s.niveau) && s.groupe === currentTeacher.groupe
-    );
-
+  requireTeacher(async (user, teacher) => {
     const tbody = document.getElementById('studentsTableBody');
     const emptyState = document.getElementById('emptyState');
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-navy/50">Chargement...</td></tr>`;
+
+    let myStudents;
+    try {
+      myStudents = await loadMyStudents(teacher);
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-rose-600 font-bold">Erreur de chargement.</td></tr>`;
+      return;
+    }
+
     document.getElementById('countBadge').textContent =
       myStudents.length + (myStudents.length > 1 ? ' élèves' : ' élève');
+    tbody.innerHTML = '';
 
     if (myStudents.length === 0) {
       emptyState.classList.remove('hidden');
-    } else {
-      const notes = loadNotes();
+      return;
+    }
 
-      myStudents.forEach((s) => {
-        const studentNotes = notes[s.id] || {};
-        const tr = document.createElement('tr');
-        tr.className = 'row-enter hover:bg-mist/50 transition-colors';
-        tr.innerHTML = `
-          <td class="px-6 sm:px-8 py-3.5 font-bold text-navy whitespace-nowrap">${s.nom}</td>
-          <td class="px-4 py-3.5 whitespace-nowrap">${s.prenom}</td>
-          <td class="px-4 py-3.5 whitespace-nowrap font-mono text-xs font-bold text-purple">${s.matricule}</td>
-          <td class="px-4 py-3.5 whitespace-nowrap"><span class="inline-block text-[11px] font-extrabold rounded-full px-3 py-1 ${levelBadgeClass(s.niveau)}">${s.niveau}</span></td>
-          <td class="px-2 py-3.5 text-center">
-            <input type="number" min="0" max="20" step="0.25" data-student="${s.id}" data-exam="examen1"
-              value="${studentNotes.examen1 ?? ''}"
-              class="note-field w-20 rounded-xl border border-line bg-mist px-2 py-2 text-sm text-center text-navy outline-none">
-          </td>
-          <td class="px-2 py-3.5 text-center">
-            <input type="number" min="0" max="20" step="0.25" data-student="${s.id}" data-exam="examen2"
-              value="${studentNotes.examen2 ?? ''}"
-              class="note-field w-20 rounded-xl border border-line bg-mist px-2 py-2 text-sm text-center text-navy outline-none">
-          </td>
-          <td class="px-2 sm:px-8 py-3.5 text-center">
-            <input type="number" min="0" max="20" step="0.25" data-student="${s.id}" data-exam="examen3"
-              value="${studentNotes.examen3 ?? ''}"
-              class="note-field w-20 rounded-xl border border-line bg-mist px-2 py-2 text-sm text-center text-navy outline-none">
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
+    for (const s of myStudents) {
+      const studentNotes = await loadNoteFor(s.id);
+      const tr = document.createElement('tr');
+      tr.className = 'row-enter hover:bg-mist/50 transition-colors';
+      tr.innerHTML = `
+        <td class="px-6 sm:px-8 py-3.5 font-bold text-navy whitespace-nowrap">${s.nom}</td>
+        <td class="px-4 py-3.5 whitespace-nowrap">${s.prenom}</td>
+        <td class="px-4 py-3.5 whitespace-nowrap font-mono text-xs font-bold text-purple">${s.id}</td>
+        <td class="px-4 py-3.5 whitespace-nowrap"><span class="inline-block text-[11px] font-extrabold rounded-full px-3 py-1 ${levelBadgeClass(s.niveau)}">${s.niveau}</span></td>
+        <td class="px-2 py-3.5 text-center">
+          <input type="number" min="0" max="20" step="0.25" data-student="${s.id}" data-exam="examen1"
+            value="${studentNotes.examen1 ?? ''}"
+            class="note-field w-20 rounded-xl border border-line bg-mist px-2 py-2 text-sm text-center text-navy outline-none">
+        </td>
+        <td class="px-2 py-3.5 text-center">
+          <input type="number" min="0" max="20" step="0.25" data-student="${s.id}" data-exam="examen2"
+            value="${studentNotes.examen2 ?? ''}"
+            class="note-field w-20 rounded-xl border border-line bg-mist px-2 py-2 text-sm text-center text-navy outline-none">
+        </td>
+        <td class="px-2 sm:px-8 py-3.5 text-center">
+          <input type="number" min="0" max="20" step="0.25" data-student="${s.id}" data-exam="examen3"
+            value="${studentNotes.examen3 ?? ''}"
+            class="note-field w-20 rounded-xl border border-line bg-mist px-2 py-2 text-sm text-center text-navy outline-none">
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
 
-      tbody.querySelectorAll('.note-field').forEach((input) => {
-        input.addEventListener('change', () => {
-          let val = parseFloat(input.value);
-          if (isNaN(val)) {
-            val = null;
-          } else {
-            val = Math.max(0, Math.min(20, val));
-            input.value = val;
-          }
+    tbody.querySelectorAll('.note-field').forEach((input) => {
+      input.addEventListener('change', async () => {
+        let val = parseFloat(input.value);
+        if (isNaN(val)) { val = null; }
+        else { val = Math.max(0, Math.min(20, val)); input.value = val; }
 
-          const studentId = input.getAttribute('data-student');
-          const exam = input.getAttribute('data-exam');
-          const notes = loadNotes();
-          notes[studentId] = notes[studentId] || {};
-          if (val === null) {
-            delete notes[studentId][exam];
-          } else {
-            notes[studentId][exam] = val;
-          }
-          saveNotes(notes);
+        const studentId = input.getAttribute('data-student');
+        const exam = input.getAttribute('data-exam');
 
+        try {
+          await saveNoteFor(studentId, { [exam]: val });
           input.classList.add('saved');
           setTimeout(() => input.classList.remove('saved'), 1000);
           showToast('Note enregistrée');
-        });
+        } catch (e) {
+          alert("Erreur lors de l'enregistrement de la note.");
+        }
       });
-    }
-  }
+    });
+  });
 
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    sessionStorage.removeItem('diwanTeacherAuth');
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await signOut(auth);
     window.location.href = 'connexion-enseignant.html';
   });
 </script>
