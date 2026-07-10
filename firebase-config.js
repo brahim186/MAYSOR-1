@@ -1,7 +1,8 @@
 // استيراد الدوال الأساسية السحابية (CDN) لتتوافق مع نظام الـ Modules في موقعك
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
 // مفاتيح الربط الخاصة بمشروع ديوان المعارف الفعلي من شاشتك
 const firebaseConfig = {
@@ -14,18 +15,59 @@ const firebaseConfig = {
   measurementId: "G-DFD9P3R01B"
 };
 
-// تهيئة المشروع وقاعدة البيانات ونظام الحسابات
+// تهيئة المشروع وقاعدة البيانات ونظام الحسابات والتخزين
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
-// تصدير المتغيرات لتقرأها صفحة تسجيل الدخول بنجاح
-export { 
-  auth, 
-  db, 
-  doc, 
-  getDoc, 
-  signInWithEmailAndPassword, 
-  signOut, 
-  onAuthStateChanged 
+/**
+ * رفع ملف (صورة أو PDF) إلى Firebase Storage وإرجاع رابط التحميل النهائي
+ * @param {string} path - المسار داخل الـ bucket (مثال: students/DA-0001/photo.jpg)
+ * @param {File} file - الملف المراد رفعه
+ * @returns {Promise<string>} رابط التحميل العمومي
+ */
+async function uploadToStorage(path, file) {
+  const storageRef = ref(storage, path);
+  await uploadBytes(storageRef, file);
+  return await getDownloadURL(storageRef);
+}
+
+/**
+ * توليد رقم تسجيل (matricule) فريد ومتسلسل باستخدام عداد Firestore transactional
+ * الوثيقة counters/students تحتفظ بآخر رقم مستعمل
+ * @returns {Promise<string>} matricule بصيغة DA-2026-0001
+ */
+async function generateMatricule() {
+  const counterRef = doc(db, "counters", "students");
+  const year = new Date().getFullYear();
+
+  const newNumber = await runTransaction(db, async (transaction) => {
+    const counterSnap = await transaction.get(counterRef);
+    let current = 0;
+    if (counterSnap.exists() && counterSnap.data().year === year) {
+      current = counterSnap.data().count || 0;
+    }
+    const next = current + 1;
+    transaction.set(counterRef, { count: next, year }, { merge: true });
+    return next;
+  });
+
+  const padded = String(newNumber).padStart(4, "0");
+  return `DA-${year}-${padded}`;
+}
+
+// تصدير المتغيرات والدوال لتقرأها صفحات الموقع (تسجيل الدخول والتسجيل ورفع الملفات)
+export {
+  auth,
+  db,
+  storage,
+  doc,
+  getDoc,
+  setDoc,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  uploadToStorage,
+  generateMatricule
 };
