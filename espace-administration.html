@@ -59,11 +59,10 @@
 
 <body class="antialiased min-h-screen">
 
-<script>
-  // Garde d'accès : redirige vers la page de connexion si l'utilisateur n'est pas authentifié.
-  if (sessionStorage.getItem('diwanAdminAuth') !== '1') {
-    window.location.replace('connexion.html');
-  }
+<script type="module">
+  // Garde d'accès Firebase : redirige vers connexion.html si non-admin authentifié.
+  import { requireAdmin } from './firebase-config.js';
+  requireAdmin(() => { /* accès autorisé */ });
 </script>
 
 <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
@@ -221,9 +220,10 @@
 
 </main>
 
-<script>
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    sessionStorage.removeItem('diwanAdminAuth');
+<script type="module">
+  import { auth, signOut } from './firebase-config.js';
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await signOut(auth);
     window.location.href = 'connexion.html';
   });
 </script>
