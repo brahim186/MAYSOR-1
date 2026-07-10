@@ -71,11 +71,9 @@
 
 <body class="antialiased min-h-screen">
 
-<script>
-  // Garde d'accès : redirige vers la page de connexion si l'utilisateur n'est pas authentifié.
-  if (sessionStorage.getItem('diwanAdminAuth') !== '1') {
-    window.location.replace('connexion.html');
-  }
+<script type="module">
+  import { requireAdmin } from './firebase-config.js';
+  requireAdmin(() => { /* accès autorisé */ });
 </script>
 
 <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-line">
@@ -268,8 +266,13 @@
 <!-- Toast de confirmation -->
 <div id="toastWrap" class="fixed bottom-6 inset-x-0 flex justify-center pointer-events-none z-50"></div>
 
-<script>
-  const STORAGE_KEY = 'diwanEnseignants';
+<script type="module">
+  import {
+    db, auth, signOut, doc, getDoc, setDoc, deleteDoc, collection, getDocs,
+    usernameToEmail, createTeacherAuthAccount, generatePassword
+  } from './firebase-config.js';
+
+  const TEACHERS_COL = collection(db, 'teachers');
 
   // --- Sélecteur multiple des niveaux (max 3) ---
   const niveauBtn      = document.getElementById('niveauBtn');
@@ -334,16 +337,9 @@
   const countBadge     = document.getElementById('countBadge');
   const toastWrap      = document.getElementById('toastWrap');
 
-  function loadTeachers() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    } catch (e) {
-      return [];
-    }
-  }
-
-  function saveTeachers(list) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  async function loadTeachers() {
+    const snap = await getDocs(TEACHERS_COL);
+    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
   }
 
   function stripAccents(str) {
@@ -367,11 +363,6 @@
     return username;
   }
 
-  function generatePassword() {
-    const num = Math.floor(Math.random() * 1000000);
-    return String(num).padStart(6, '0');
-  }
-
   function levelBadgeClass(niveau) {
     if (niveau.includes('primaire')) return 'badge-lvl-primaire';
     if (niveau.includes('collège')) return 'badge-lvl-college';
@@ -388,8 +379,15 @@
     return num.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' DH';
   }
 
-  function render() {
-    const teachers = loadTeachers();
+  async function render() {
+    tableBody.innerHTML = `<tr><td colspan="11" class="text-center py-8 text-navy/50">Chargement des enseignants...</td></tr>`;
+    let teachers;
+    try {
+      teachers = await loadTeachers();
+    } catch (e) {
+      tableBody.innerHTML = `<tr><td colspan="11" class="text-center py-8 text-rose-600 font-bold">Erreur de connexion à Firestore.</td></tr>`;
+      return;
+    }
     tableBody.innerHTML = '';
 
     if (teachers.length === 0) {
@@ -411,7 +409,9 @@
         <td class="px-4 py-4 whitespace-nowrap"><span class="inline-block text-[11px] font-extrabold rounded-full px-3 py-1 ${groupBadgeClass(t.groupe)}">${t.groupe}</span></td>
         <td class="px-4 py-4 whitespace-nowrap font-bold text-emerald-600">${formatSalaire(t.salaire)}</td>
         <td class="px-4 py-4 whitespace-nowrap font-mono text-xs font-bold text-purple">${t.username}</td>
-        <td class="px-4 py-4 whitespace-nowrap font-mono text-xs font-bold text-gold-dark">${t.password}</td>
+        <td class="px-4 py-4 whitespace-nowrap">
+          <button data-id="${t.id}" class="resetBtn text-[11px] font-extrabold text-gold-dark hover:text-navy underline decoration-dotted">Réinitialiser</button>
+        </td>
         <td class="px-4 sm:px-8 py-4 whitespace-nowrap text-right">
           <button data-id="${t.id}" class="deleteBtn inline-flex items-center gap-1.5 text-xs font-bold text-rose-500 hover:text-rose-700 transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -424,12 +424,33 @@
 
     countBadge.textContent = teachers.length + (teachers.length > 1 ? ' enseignants' : ' enseignant');
 
-    document.querySelectorAll('.deleteBtn').forEach((btn) => {
+    document.querySelectorAll('.resetBtn').forEach((btn) => {
       btn.addEventListener('click', () => {
+        // ⚠️ Changer le mot de passe d'un AUTRE utilisateur nécessite l'Admin SDK
+        // (Cloud Function), ce que le client seul ne peut pas faire en toute sécurité.
+        // Solution pratique sans backend : supprimer puis ré-ajouter l'enseignant
+        // (nouveau compte, nouveau mot de passe généré automatiquement).
+        alert("Pour changer le mot de passe d'un enseignant sans serveur backend, la solution la plus simple est de le supprimer puis de le réajouter : un nouvel identifiant et mot de passe seront générés automatiquement.");
+      });
+    });
+
+    document.querySelectorAll('.deleteBtn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Voulez-vous vraiment supprimer cet enseignant ? (son accès sera aussi révoqué)')) return;
         const id = btn.getAttribute('data-id');
-        const updated = loadTeachers().filter((t) => String(t.id) !== String(id));
-        saveTeachers(updated);
-        render();
+        btn.disabled = true;
+        btn.textContent = 'Suppression...';
+        try {
+          // Supprime le profil Firestore. Le compte Auth reste orphelin (Firebase Auth ne peut
+          // être supprimé que côté admin/Cloud Function) mais n'a plus aucun accès aux données
+          // car il n'a plus de document dans /teachers, ce que vérifient les Security Rules.
+          await deleteDoc(doc(db, 'teachers', id));
+          showToast('Enseignant supprimé avec succès');
+          render();
+        } catch (e) {
+          alert('Erreur lors de la suppression : ' + e.message);
+          render();
+        }
       });
     });
   }
@@ -445,7 +466,7 @@
     setTimeout(() => toast.remove(), 3000);
   }
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const nom       = document.getElementById('nom').value.trim();
@@ -463,26 +484,41 @@
     }
     formError.classList.add('hidden');
 
-    const teachers = loadTeachers();
-    const existingUsernames = teachers.map((t) => t.username);
-    const username = generateUsername(prenom, nom, existingUsernames);
-    const password = generatePassword();
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    const originalBtnHtml = submitBtn.innerHTML;
+    submitBtn.innerHTML = 'Ajout en cours...';
 
-    teachers.push({
-      id: Date.now(),
-      nom, prenom, genre, adresse, telephone, niveaux, groupe, salaire: Number(salaire),
-      username, password
-    });
+    try {
+      const teachers = await loadTeachers();
+      const existingUsernames = teachers.map((t) => t.username);
+      const username = generateUsername(prenom, nom, existingUsernames);
+      const password = generatePassword();
+      const email = usernameToEmail(username);
 
-    saveTeachers(teachers);
-    render();
-    showToast(`Enseignant ajouté — identifiant : ${username}`);
-    form.reset();
-    resetNiveauSelector();
+      // 1) Crée le compte Firebase Auth de l'enseignant (sans déconnecter l'admin)
+      const uid = await createTeacherAuthAccount(email, password);
+
+      // 2) Crée son profil Firestore (id du document = uid Auth)
+      await setDoc(doc(db, 'teachers', uid), {
+        nom, prenom, genre, adresse, telephone, niveaux, groupe,
+        salaire: Number(salaire), username, createdAt: new Date().toISOString()
+      });
+
+      render();
+      showToast(`Enseignant ajouté — identifiant : ${username} / mot de passe : ${password}`);
+      form.reset();
+      resetNiveauSelector();
+    } catch (err) {
+      alert("Erreur lors de l'ajout : " + err.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnHtml;
+    }
   });
 
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    sessionStorage.removeItem('diwanAdminAuth');
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await signOut(auth);
     window.location.href = 'connexion.html';
   });
 
