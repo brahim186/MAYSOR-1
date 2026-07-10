@@ -342,10 +342,11 @@
   <p class="text-center text-white/40 text-xs">© <span id="year"></span> Diwan Al Maaref — Établissement de Soutien Scolaire</p>
 </footer>
 
-<script>
+<script type="module">
+import { db, doc, setDoc, uploadToStorage, generateMatricule } from './firebase-config.js';
+
 document.getElementById('year').textContent = new Date().getFullYear();
 
-const API_URL = "https://script.google.com/macros/s/AKfycbzp02iIFpmApUG9TwgOZCU9Fi6plJuEvICC2z2znb2urpqb_dqzTDjssoTF2Fv6ij6ZlQ/exec";
 const MAX_FILE_MB = 5;
 
 function wireDropZone(zoneId, inputId, labelId, opts) {
@@ -458,11 +459,6 @@ form.addEventListener('submit', async (e) => {
     return;
   }
 
-  if (API_URL.indexOf('PASTE_YOUR') === 0) {
-    showToast("Veuillez configurer l'URL du serveur (API_URL) avant l'envoi", 'error');
-    return;
-  }
-
   submitBtn.disabled = true;
   btnSpinner.classList.remove('hidden');
   btnText.textContent = 'Envoi en cours...';
@@ -472,57 +468,49 @@ form.addEventListener('submit', async (e) => {
     const birthFile = document.getElementById('birthFile').files[0];
     const idFile = document.getElementById('idFile').files[0];
 
-    const [photoB64, birthB64, idB64] = await Promise.all([
-      fileToBase64(photoFile),
-      fileToBase64(birthFile),
-      fileToBase64(idFile),
+    // 1) Génère un matricule unique (compteur transactionnel Firestore)
+    const matricule = await generateMatricule();
+
+    // 2) Upload des documents vers Firebase Storage (en parallèle)
+    const [photoURL, birthCertURL, cinParentsURL] = await Promise.all([
+      photoFile ? uploadToStorage(`students/${matricule}/photo_${photoFile.name}`, photoFile) : '',
+      birthFile ? uploadToStorage(`students/${matricule}/acte_${birthFile.name}`, birthFile) : '',
+      idFile    ? uploadToStorage(`students/${matricule}/cin_${idFile.name}`, idFile) : '',
     ]);
 
-    const payload = {
-      firstName: form.firstName.value.trim(),
-      lastName: form.lastName.value.trim(),
-      dob: form.dob.value,
-      pob: form.pob.value.trim(),
-      gender: form.gender.value,
-      level: form.level.value.trim(),
-      fatherName: form.fatherName.value.trim(),
-      motherName: form.motherName.value.trim(),
-      fatherCIN: form.fatherCIN.value.trim(),
-      motherCIN: form.motherCIN.value.trim(),
-      motherPhone: form.motherPhone.value.trim(),
-      fatherPhone: form.fatherPhone.value.trim(),
-      emergencyPhone: form.emergencyPhone.value.trim(),
-      files: {
-        photo: photoB64, photoType: photoFile ? photoFile.type : '',
-        birthCert: birthB64, birthCertType: birthFile ? birthFile.type : '',
-        idCards: idB64, idCardsType: idFile ? idFile.type : '',
-      }
-    };
-
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload),
+    // 3) Écrit le dossier de l'élève dans Firestore (id du document = matricule)
+    await setDoc(doc(db, 'students', matricule), {
+      prenom: form.firstName.value.trim(),
+      nom: form.lastName.value.trim(),
+      dateNaissance: form.dob.value,
+      lieuNaissance: form.pob.value.trim(),
+      genre: form.gender.value,
+      niveau: form.level.value.trim(),
+      nomPere: form.fatherName.value.trim(),
+      nomMere: form.motherName.value.trim(),
+      cinPere: form.fatherCIN.value.trim(),
+      cinMere: form.motherCIN.value.trim(),
+      telPere: form.fatherPhone.value.trim(),
+      telMere: form.motherPhone.value.trim(),
+      telUrgence: form.emergencyPhone.value.trim(),
+      photoURL, acteNaissanceURL: birthCertURL, cinParentsURL,
+      statut: 'En attente',
+      groupe: 'Non assigné',
+      horodatage: new Date().toISOString()
     });
 
-    const result = await res.json();
-
-    if (result.status === 'success') {
-      showToast("Demande d'inscription envoyée avec succès ! Numéro de dossier : " + result.id, 'success');
-      form.reset();
-      document.querySelectorAll('.file-drop').forEach(z => z.classList.remove('has-file'));
-      document.getElementById('photoPreview').classList.add('hidden');
-      document.getElementById('photoIcon').classList.remove('hidden');
-      document.getElementById('photoLabel').textContent = 'Cliquez pour charger la photo';
-      document.getElementById('birthLabel').textContent = 'Cliquez pour charger le document';
-      document.getElementById('idLabel').textContent = 'Cliquez pour charger le document';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      showToast(result.message || "Une erreur est survenue lors de l'envoi", 'error');
-    }
+    showToast("Demande d'inscription envoyée avec succès ! Numéro de dossier : " + matricule, 'success');
+    form.reset();
+    document.querySelectorAll('.file-drop').forEach(z => z.classList.remove('has-file'));
+    document.getElementById('photoPreview').classList.add('hidden');
+    document.getElementById('photoIcon').classList.remove('hidden');
+    document.getElementById('photoLabel').textContent = 'Cliquez pour charger la photo';
+    document.getElementById('birthLabel').textContent = 'Cliquez pour charger le document';
+    document.getElementById('idLabel').textContent = 'Cliquez pour charger le document';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
   } catch (err) {
-    showToast('Connexion au serveur impossible. Veuillez réessayer.', 'error');
+    showToast("Erreur lors de l'envoi : " + err.message, 'error');
   } finally {
     submitBtn.disabled = false;
     btnSpinner.classList.add('hidden');
